@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+
+}
+
+group = 'com.diploma'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '19'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
