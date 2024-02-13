@@ -1,0 +1,133 @@
+openapi: 3.0.3
+info:
+  title: Market app
+  # description: 
+  version: 1.0.0
+
+components:
+  schemas:
+    ProductDto:
+        type: object
+        required: [id, name, category, description, price, imageUrl, date, userId, hidden, allowed]
+        properties:
+          id:
+            type: string
+            format: uuid
+          name:
+            type: string
+          category:
+            type: string
+          description:
+            type: string
+          price:
+            type: integer
+          imageUrl:
+            type: string
+          date:
+            type: string
+          userId:
+            type: string
+          hidden:
+            type: boolean
+          allowed:
+            type: boolean
+    GetProductsResponse:
+      type: object
+      required: [products, number_of_items]
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDto"
+    CreateProductRequest:
+      type: object
+      required: [name, category, description, price, imageUrl]
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        imageUrl:
+          type: string
+ 
+
+
+
+
+paths:
+  /market/products:
+    get:
+      summary: Получение всех товаров по конкретной категории c возможностью поиска и фильтрации по цене мин/макс + по возр. и убыв.
+      tags:
+        - market
+      parameters:
+        - in: query
+          name: search_pattern
+          schema:
+            type: string 
+          description: Паттерн для поска новости по заголовку и по телу
+          required: false
+        - in: query
+          name: sort_type
+          schema:
+            type: string
+            enum:
+              - ASCENDING
+              - DESCENDING
+        - in: query
+          name: min_price
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: max_price
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: category
+          schema:
+            type: string
+            enum:
+              - A
+              - B
+              - C
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetProductsResponse"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+  /market/product:
+    post:
+      summary: Добавление товара
+      tags:
+        - market
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProductRequest"          
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDto"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED

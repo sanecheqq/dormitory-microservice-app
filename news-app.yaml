@@ -1,0 +1,117 @@
+openapi: 3.0.3
+info:
+  title: News app
+  # description: 
+  version: 1.0.0
+
+components:
+  schemas:
+    NewsDto:
+      type: object
+      required: [id, title, category, content, imageUrl, date]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        category:
+          type: string
+        content:
+          type: string
+        imageUrl:
+          type: string
+        date:
+          type: string
+    GetNewsResponse:
+      type: object
+      required: [news, number_of_items]
+      properties:
+        news:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsDto"
+    GetSavedNewsRequest:
+      type: object
+      required: [idsOfNews]
+      properties:
+        idsOfNews:
+          type: array
+          items:
+            type: string
+            format: uuid
+    GetSavedNewsResponse:
+      type: object
+      required: [news, number_of_items]
+      properties:
+        news:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsDto"
+
+paths:
+  /news:
+    get:
+      summary: Получение всех новостей
+      tags:
+        - news
+      parameters:
+        - in: query
+          name: search_pattern
+          schema:
+            type: string 
+          description: Паттерн для поска новости по заголовку и по телу
+          required: false
+        - in: query
+          name: sort_type
+          schema:
+            type: string
+            enum:
+              - ASCENDING
+              - DESCENDING
+          description: (default=DESCENDING)
+        - in: query
+          name: category
+          schema:
+            type: string
+            enum:
+              - A
+              - B
+              - C
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetNewsResponse"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+  /saved-news:
+    get:
+      summary: Получение сохраненных новостей
+      tags:
+        - news
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetSavedNewsRequest"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSavedNewsResponse"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND

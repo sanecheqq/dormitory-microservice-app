@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: User app
+  # description: 
+  version: 1.0.0
+components:
+  schemas:
+    AuthRequest:
+      type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+          example: "login"
+        password:
+          type: string
+          example: "password"
+    AuthResponse:
+      type: object
+      required: [access_token]
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob2xkZXIiLCJpYXQiOjE2OTI1NjUzNjYsImV4cCI6MTY5MjU2NzE2Nn0.AAlIEhggbhvBSVqHNmbHbZvsrUiRGtVT3I5FdN5Tz1s"
+    
+    CertificatesDto:
+      type: object
+      required: [id, FluraStartDate, FluraExpireDate, ZPPStartDate, ZppExpireDate]
+      properties:
+        id: 
+          type: string
+          format: uuid
+        FluraStartDate: 
+          type: string
+        FluraExpireDate: 
+          type: string
+        ZPPStartDate: 
+          type: string
+        ZppExpireDate:
+          type: string
+    UserDto:
+      type: object
+      required: [id, login, name, surname, patronymic, phone_number, group, address, certificates]
+      properties:
+        id:
+          type: string
+          format: uuid
+        login:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        patronymic:
+          type: string
+        phone_number:
+          type: string
+        group:
+          type: string
+        address:
+          type: string
+        role:
+          type: string
+          example: "USER"
+        certificates:
+          $ref: "#/components/schemas/CertificatesDto"
+    NewsDto:
+      type: object
+      required: [id, title, category, content, imageUrl, date]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        category:
+          type: string
+        content:
+          type: string
+        imageUrl:
+          type: string
+        date:
+          type: string
+    GetNewsResponse:
+      type: object
+      required: [news, number_of_items]
+      properties:
+        news:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsDto"
+    ProductDto:
+        type: object
+        required: [id, name, category, description, price, imageUrl, date, userId, hidden, allowed]
+        properties:
+          id:
+            type: string
+            format: uuid
+          name:
+            type: string
+          category:
+            type: string
+          description:
+            type: string
+          price:
+            type: integer
+          imageUrl:
+            type: string
+          date:
+            type: string
+          userId:
+            type: string
+          hidden:
+            type: boolean
+          allowed:
+            type: boolean
+    GetProductsResponse:
+      type: object
+      required: [products, number_of_items]
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDto"
+
+
+
+paths:
+  /auth/login:
+    post:
+      summary: Авторизация пользователя
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRequest"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+  /user/profile:
+    get:
+      summary: Получение данных о пользователе
+      tags:
+        - user
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+  /user/saved-news:
+    get:
+      summary: Получение избранных новостей
+      tags:
+        - user
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetNewsResponse"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+    patch:
+      summary:  Сохранение/удаление избранной новости
+      tags:
+        - user
+      parameters:
+        - in: query
+          name: news_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+  /user/saved-products:
+    get:
+      summary: Получение избранных товаров
+      tags:
+        - user
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetProductsResponse"
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+    patch:
+      summary: Сохранение/удаление избранного товара
+      tags:
+        - user
+      parameters:
+        - in: query
+          name: product_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: BAD REQUEST
+        401:
+          description: UNAUTHORIZED
+        404:
+          description: NOT FOUND
+
+  
