@@ -7,5 +7,5 @@ import com.seminav.newsapp.model.NewsCategory;
 import java.util.List;
 
 public interface NewsService {
-    List<NewsDto> getNews(String searchPattern, NewsCategory newsCategory, SortType sortType);
+    List<NewsDto> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType);
 }
