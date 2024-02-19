@@ -92,7 +92,7 @@ paths:
           description: UNAUTHORIZED
         404:
           description: NOT FOUND
-  /saved-news:
+  /news/saved:
     get:
       summary: Получение сохраненных новостей
       tags:
