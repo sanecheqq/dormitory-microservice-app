@@ -1,8 +1,11 @@
 package com.seminav.newsapp.model;
 
+import lombok.Getter;
+
+@Getter
 public enum NewsCategory {
     ORDERS("Приказы"),
-    CATEGORY2("Забыл");
+    NEWS("Новости");
 
     private final String category;
 
