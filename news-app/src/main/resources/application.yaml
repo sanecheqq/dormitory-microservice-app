@@ -1,5 +1,24 @@
-spring:
-  application:
-    name: NEWS-APP
 server:
   port: 8080
+  
+# For local testing
+POSTGRES_URL: jdbc:postgresql://localhost:5432/news
+POSTGRES_USER: postgres
+POSTGRES_PASSWORD: postgres
+
+# App Config
+spring:
+  application:
+    name: news-app
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    show-sql: true
+
+
+

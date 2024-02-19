@@ -2,11 +2,15 @@ package com.seminav.newsapp.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "news")
 @RequiredArgsConstructor
 @AllArgsConstructor
