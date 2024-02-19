@@ -27,7 +27,7 @@ public class News {
     String content;
 
     @Column(name = "category")
-    NewsCategory newsCategory;
+    NewsCategory category;
 
     @Column(name = "image_id")
     String imageId;
