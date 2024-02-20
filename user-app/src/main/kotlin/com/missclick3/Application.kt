@@ -1,5 +1,6 @@
 package com.missclick3
 
+import com.missclick3.data.dao.DatabaseSingleton
 import com.missclick3.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -11,6 +12,7 @@ fun main() {
 }
 
 fun Application.module() {
+    DatabaseSingleton.init()
     configureSecurity()
     configureMonitoring()
     configureSerialization()

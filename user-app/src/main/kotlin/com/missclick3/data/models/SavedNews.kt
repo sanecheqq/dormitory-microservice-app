@@ -1,4 +1,4 @@
-package com.missclick3.models
+package com.missclick3.data.models
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 

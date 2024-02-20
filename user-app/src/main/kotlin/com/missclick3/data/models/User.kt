@@ -1,4 +1,4 @@
-package com.missclick3.models
+package com.missclick3.data.models
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -14,7 +14,9 @@ data class User(
     val email: String,
     val phoneNumber: String,
     val tgUsername: String,
-    val address: String
+    val address: String,
+    val password: String,
+    val salt: String
 )
 
 object Users: UUIDTable("users") {
@@ -24,4 +26,6 @@ object Users: UUIDTable("users") {
     val email = varchar("email", 256).like("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
     val phoneNumber = varchar("phoneNumber", 12).like("\"^\\\\+7\\\\d{10}\$\"")
     val tgUsername = varchar("tgUsername", 128)
+    val password = varchar("password", 128)
+    val salt = varchar("salt", 128)
 }
