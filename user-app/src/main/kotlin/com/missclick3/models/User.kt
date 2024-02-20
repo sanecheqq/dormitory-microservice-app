@@ -17,7 +17,7 @@ data class User(
     val address: String
 )
 
-object Users: UUIDTable() {
+object Users: UUIDTable("users") {
     val name = varchar("name", 128)
     val surname = varchar("surname", 128)
     val patronymic = varchar("patronymic", 128)
