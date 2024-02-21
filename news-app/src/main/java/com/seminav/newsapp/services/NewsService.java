@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface NewsService {
     List<NewsDto> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType);
+
+    List<NewsDto> getSavedNews(List<String> strings);
 }
