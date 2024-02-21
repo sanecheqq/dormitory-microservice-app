@@ -23,6 +23,16 @@ public class NewsServiceImpl implements NewsService {
     public List<NewsDto> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType) {
         var sortOrder = sortType.equals(SortType.ASCENDING) ? Sort.Order.asc("date") : Sort.Order.desc("date");
         List<News> news = newsRepo.getNewsByNewsCategoryAndSearchPatternAndSortByDate(newsCategory, searchPattern, Sort.by(sortOrder));
+        return convertListNewsToListNewsDto(news);
+    }
+
+    @Override
+    public List<NewsDto> getSavedNews(List<String> idsOfNews) {
+        List<News> savedNews = newsRepo.findAllById(idsOfNews);
+        return convertListNewsToListNewsDto(savedNews);
+    }
+
+    private List<NewsDto> convertListNewsToListNewsDto(List<News> news) {
         return news.stream()
                 .map(newsToNewsDtoConverter::convert)
                 .collect(Collectors.toList());

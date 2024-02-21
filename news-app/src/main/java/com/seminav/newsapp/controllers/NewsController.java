@@ -1,15 +1,17 @@
 package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.messages.GetNewsResponse;
+import com.seminav.newsapp.messages.GetSavedNewsRequest;
+import com.seminav.newsapp.messages.GetSavedNewsResponse;
 import com.seminav.newsapp.messages.SortType;
+import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.model.NewsCategory;
 import com.seminav.newsapp.services.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -26,5 +28,13 @@ public class NewsController {
     ) {
         var news = newsService.getNews(newsCategory, searchPattern, sortType);
         return ResponseEntity.ok(new GetNewsResponse(news));
+    }
+
+    @GetMapping("/saved")
+    public ResponseEntity<GetSavedNewsResponse> getSavedNews(
+            @RequestBody GetSavedNewsRequest getSavedNewsRequest
+    ) {
+        List<NewsDto> savedNews = newsService.getSavedNews(getSavedNewsRequest.idsOfNews());
+        return ResponseEntity.ok(new GetSavedNewsResponse(savedNews));
     }
 }
