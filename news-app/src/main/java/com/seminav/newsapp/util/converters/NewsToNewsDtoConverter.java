@@ -12,8 +12,8 @@ public class NewsToNewsDtoConverter implements Converter<News, NewsDto> {
         return new NewsDto(
                 news.getId(),
                 news.getTitle(),
-                news.getNewsCategory()
-                        .getCategory(),
+                news.getCategory()
+                        .toString(),
                 news.getContent(),
                 news.getImageId(),
                 news.getDate()

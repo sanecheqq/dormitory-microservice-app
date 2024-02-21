@@ -22,7 +22,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public List<NewsDto> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType) {
         var sortOrder = sortType.equals(SortType.ASCENDING) ? Sort.Order.asc("date") : Sort.Order.desc("date");
-        List<News> news = newsRepo.getNewsByNewsCategoryAndSearchPatternAndSortByDate(newsCategory.getCategory(), searchPattern, Sort.by(sortOrder));
+        List<News> news = newsRepo.getNewsByNewsCategoryAndSearchPatternAndSortByDate(newsCategory, searchPattern, Sort.by(sortOrder));
         return news.stream()
                 .map(newsToNewsDtoConverter::convert)
                 .collect(Collectors.toList());

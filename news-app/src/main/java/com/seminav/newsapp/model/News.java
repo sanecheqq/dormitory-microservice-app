@@ -8,12 +8,12 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "news")
-@RequiredArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
+@Entity
+@Table(name = "news")
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,6 +27,7 @@ public class News {
     String content;
 
     @Column(name = "category")
+    @Enumerated(EnumType.STRING)
     NewsCategory category;
 
     @Column(name = "image_id")
