@@ -1,0 +1,19 @@
+server:
+    port: 8099
+
+
+# App Config
+spring:
+    application:
+        name: storage-app
+    servlet:
+        multipart:
+            max-file-size: 20MB
+            max-request-size: 210MB
+
+# AWS Environment Variables
+aws.access-key: ${AWS_ACCESS_KEY_ID}
+aws.secret-key: ${AWS_SECRET_ACCESS_KEY}
+aws.service-endpoint: https://hb.ru-msk.vkcs.cloud/
+aws.region: ru-msk
+aws.bucket-name: dormitory-app-storage
