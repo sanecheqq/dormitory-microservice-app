@@ -3,12 +3,10 @@ package com.seminav.newsapp.controllers;
 import com.seminav.newsapp.messages.CreateNewsRequest;
 import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.services.NewsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -18,9 +16,9 @@ public class AdminController {
 
     @PostMapping
     public ResponseEntity<NewsDto> createNews(
-            @RequestBody CreateNewsRequest createNewsRequest
+            @ModelAttribute @Valid CreateNewsRequest createNewsRequest
     ) {
         return ResponseEntity.ok(newsService.createNews(createNewsRequest));
-
     }
+
 }
