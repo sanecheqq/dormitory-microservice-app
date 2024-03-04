@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface CloudStorageService {
     List<FileDto> uploadFiles(List<MultipartFile> files);
+
     void deleteFiles(List<String> ids);
 }

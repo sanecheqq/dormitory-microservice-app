@@ -1,6 +1,7 @@
 package com.seminav.newsapp.external.services;
 
 import com.seminav.newsapp.exceptions.ConvertMultipartFileToByteArrayResourceException;
+import com.seminav.newsapp.exceptions.FilesCanNotBeNullException;
 import com.seminav.newsapp.exceptions.UploadFilesException;
 import com.seminav.newsapp.external.messages.FileDto;
 import com.seminav.newsapp.external.messages.UploadFilesResponse;
@@ -31,6 +32,9 @@ public class CloudStorageServiceImpl extends DiscoveryClientService implements C
 
     @Override
     public List<FileDto> uploadFiles(List<MultipartFile> files) {
+        if (files == null) {
+            throw new FilesCanNotBeNullException("List of Files cannot be null");
+        }
         var storageInstance = getAvaliableServiceInstance("storage-app");
         URI uploadFilesUri = storageInstance.getUri().resolve("/storage-api");
         var headers = new HttpHeaders();
