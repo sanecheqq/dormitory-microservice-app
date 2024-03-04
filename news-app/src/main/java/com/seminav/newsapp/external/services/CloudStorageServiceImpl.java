@@ -1,5 +1,6 @@
 package com.seminav.newsapp.external.services;
 
+import com.seminav.newsapp.exceptions.ConvertMultipartFileToByteArrayResourceException;
 import com.seminav.newsapp.exceptions.UploadFilesException;
 import com.seminav.newsapp.external.messages.FileDto;
 import com.seminav.newsapp.external.messages.UploadFilesResponse;
@@ -14,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -34,25 +36,28 @@ public class CloudStorageServiceImpl extends DiscoveryClientService implements C
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
-        for (var multipartFile : files) {
-            try {
-                ByteArrayResource resource = new ByteArrayResource(multipartFile.getBytes()) {
-                    @Override
-                    public String getFilename() {
-                        return multipartFile.getOriginalFilename();
-                    }
-                };
-                requestBody.add("files", resource);
-            } catch (Exception e) {
-                    System.out.println(e.getMessage());
-            }
-        }
+
+        requestBody.addAll("files", files.stream().map(file-> {
+            try { return convertMultipartFileToByteArrayResource(file); }
+            catch (IOException e) { throw new ConvertMultipartFileToByteArrayResourceException(e.getMessage()); }
+            }).toList()
+        );
+
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         var uploadResponseEntity = restTemplate.postForEntity(uploadFilesUri, requestEntity, UploadFilesResponse.class);
         if (uploadResponseEntity.getStatusCode().isError() || uploadResponseEntity.getBody() == null) {
             throw new UploadFilesException("Uploading files failed");
         }
         return uploadResponseEntity.getBody().fileDtos();
+    }
+
+    private static ByteArrayResource convertMultipartFileToByteArrayResource(MultipartFile multipartFile) throws IOException {
+        return new ByteArrayResource(multipartFile.getBytes()) {
+            @Override
+            public String getFilename() {
+                return multipartFile.getOriginalFilename();
+            }
+        };
     }
 
     @Override
