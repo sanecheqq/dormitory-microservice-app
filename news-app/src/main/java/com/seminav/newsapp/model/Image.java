@@ -15,8 +15,11 @@ import lombok.Setter;
 public class Image {
     @Id
     @Column(name = "image_id")
-    String imageId;
+    private String imageId;
 
     @Column(name = "url")
-    String url;
+    private String url;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private News news;
 }
