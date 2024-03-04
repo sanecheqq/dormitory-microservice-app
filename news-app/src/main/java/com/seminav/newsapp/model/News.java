@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,22 +20,27 @@ import java.sql.Timestamp;
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    String id;
+    @Column(name = "news_id")
+    private String newsid;
 
     @Column(name = "title")
-    String title;
+    private String title;
 
     @Column(name = "content")
-    String content;
+    private String content;
 
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
-    NewsCategory category;
+    private NewsCategory category;
 
-    @Column(name = "image_id")
-    String imageId;
+    @OneToMany
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+
+    @OneToMany
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Document> documents = new ArrayList<>();
 
     @Column(name = "date")
-    Timestamp date;
+    private Timestamp date;
 }
