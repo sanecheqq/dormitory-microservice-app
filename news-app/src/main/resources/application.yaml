@@ -10,6 +10,10 @@ POSTGRES_PASSWORD: postgres
 spring:
   application:
     name: news-app
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 210MB
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
@@ -19,6 +23,5 @@ spring:
       ddl-auto: create
     generate-ddl: true
     show-sql: true
-
 
 
