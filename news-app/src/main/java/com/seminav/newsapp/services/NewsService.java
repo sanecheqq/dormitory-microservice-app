@@ -10,7 +10,9 @@ import java.util.List;
 public interface NewsService {
     List<NewsDto> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType);
 
-    List<NewsDto> getSavedNews(List<String> strings);
+    List<NewsDto> getSavedNews(List<String> strings); //todo: переделать с передачей request-класса
 
     NewsDto createNews(CreateNewsRequest createNewsRequest);
+
+    void deleteNews(String newsId);
 }

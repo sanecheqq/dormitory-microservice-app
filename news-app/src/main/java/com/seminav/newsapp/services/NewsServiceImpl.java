@@ -20,6 +20,10 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +34,8 @@ public class NewsServiceImpl implements NewsService {
     private final FileDtoToImageConverter fileDtoToImageConverter;
     private final FileDtoToDocumentConverter fileDtoToDocumentConverter;
     private final CloudStorageService cloudStorageService;
+
+    private final ExecutorService sendingRequestsExecutor = Executors.newFixedThreadPool(15);
 
     @Override
     public List<NewsDto> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType) {
@@ -46,17 +52,34 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public NewsDto createNews(CreateNewsRequest createNewsRequest) {
-    // TODO: ИДЕЯ: посылать два асинхронных запроса на uploadFiles для images & documents,
-    //  в это время сохранить энтити новости, потом по пришествии ответа досохранить ссылки на images/docs
         List<MultipartFile> images = createNewsRequest.images();
         List<MultipartFile> documents = createNewsRequest.documents();
+        CompletableFuture<List<FileDto>> uploadImagesFuture = CompletableFuture.supplyAsync(
+                () -> cloudStorageService.uploadFiles(images),
+                sendingRequestsExecutor
+        ).handle((result, ex) -> {
+            if (ex != null)
+                return new ArrayList<>();
+            else
+                return result;
+        });
+        CompletableFuture<List<FileDto>> uploadDocumentsFuture = CompletableFuture.supplyAsync(
+                () -> cloudStorageService.uploadFiles(documents),
+                sendingRequestsExecutor
+        ).handle((result, ex) -> {
+            if (ex != null)
+                return new ArrayList<>();
+            else
+                return result;
+        });
+
         List<FileDto> imageFileDtos = new ArrayList<>();
         List<FileDto> documentFileDtos = new ArrayList<>();
-        if (!images.isEmpty()) {
-            imageFileDtos = cloudStorageService.uploadFiles(images);
-        }
-        if (!documents.isEmpty()) {
-            documentFileDtos = cloudStorageService.uploadFiles(documents);
+        try {
+            imageFileDtos = uploadImagesFuture.get();
+            documentFileDtos = uploadDocumentsFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
         }
 
         News news = new News();
@@ -64,9 +87,20 @@ public class NewsServiceImpl implements NewsService {
         news.setCategory(NewsCategory.valueOf(createNewsRequest.category()));
         news.setContent(createNewsRequest.content());
         news.setDate(Timestamp.from(Instant.now()));
-        news.setImages(imageFileDtos.stream().map(fileDtoToImageConverter::convert).toList());
-        news.setDocuments(documentFileDtos.stream().map(fileDtoToDocumentConverter::convert).toList());
+        news.setImages(imageFileDtos.stream()
+                .map(fileDtoToImageConverter::convert)
+                .toList()
+        );
+        news.setDocuments(documentFileDtos.stream()
+                .map(fileDtoToDocumentConverter::convert)
+                .toList()
+        );
         return newsToNewsDtoConverter.convert(newsRepo.save(news));
+    }
+
+    @Override
+    public void deleteNews(String newsId) {
+        return;
     }
 
     private List<NewsDto> convertListNewsToListNewsDto(List<News> news) {
