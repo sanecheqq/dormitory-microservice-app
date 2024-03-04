@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 public class FileDtoToDocumentConverter implements Converter<FileDto, Document> {
     @Override
     public Document convert(FileDto fileDto) {
-        return new Document(fileDto.fileId(), fileDto.url());
+        Document doc = new Document();
+        doc.setDocumentId(fileDto.fileId());
+        doc.setUrl(fileDto.url());
+        return doc;
     }
 }

@@ -10,6 +10,6 @@ public class DocumentToFileDtoConverter implements Converter<Document, FileDto> 
 
     @Override
     public FileDto convert(Document doc) {
-        return new FileDto(doc.getId(), doc.getUrl());
+        return new FileDto(doc.getDocumentId(), doc.getUrl());
     }
 }
