@@ -9,6 +9,7 @@ import java.util.*
 
 class UserDaoImpl : UserDao {
     private fun resultRowToUser(row: ResultRow) = User (
+        id = row[Users.id].toString(),
         username = row[Users.username],
         name = row[Users.name],
         surname = row[Users.surname],
