@@ -50,8 +50,9 @@ public class NewsStructureTest {
         }
         news.setImages(images);
         news.setDocuments(docs);
-        newsRepository.save(news);
+        News saved = newsRepository.save(news);
         assertThat(documentRepository.count()).isEqualTo(3);
         assertThat(imageRepository.count()).isEqualTo(3);
+        assertThat(newsRepository.findById(saved.getNewsid()).get().getImages().size()).isEqualTo(3);
     }
 }
