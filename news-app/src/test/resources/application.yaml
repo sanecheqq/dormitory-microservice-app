@@ -1,0 +1,25 @@
+server:
+  port: 8090
+  
+## For local testing
+#POSTGRES_URL: jdbc:postgresql://localhost:5432/news
+#POSTGRES_USER: postgres
+#POSTGRES_PASSWORD: postgres
+
+# App Config
+spring:
+  application:
+    name: news-app
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 210MB
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test_db
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    show-sql: true
+
