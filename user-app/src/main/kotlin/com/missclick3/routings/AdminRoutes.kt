@@ -28,12 +28,12 @@ fun Route.addUser(
         }
 
         val isUsernameBlank = request.username.isBlank()
-        val isPasswordInvalid = request.password.length < 8
+        val isPasswordValid = request.password.length >= 8
                 || request.password.any { it.isUpperCase() }
                 || request.password.any { it.isDigit() }
                 || request.password.any { !it.isLetterOrDigit() }
 
-        if (isUsernameBlank || isPasswordInvalid) {
+        if (isUsernameBlank || !isPasswordValid) {
             call.respond(HttpStatusCode.Conflict, "Некорректный логин или пароль")
             return@post
         }

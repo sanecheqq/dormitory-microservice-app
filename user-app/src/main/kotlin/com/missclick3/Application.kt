@@ -4,7 +4,9 @@ import com.missclick3.data.dao.DatabaseSingleton
 import com.missclick3.data.dao.user.UserDaoImpl
 import com.missclick3.data.models.User
 import com.missclick3.plugins.*
+import com.missclick3.security.hashing.HashingServiceImpl
 import com.missclick3.security.token.TokenConfig
+import com.missclick3.security.token.TokenServiceImpl
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -23,9 +25,12 @@ fun Application.module() {
         expiresIn = 365L * 1000L * 60L * 60L * 24L,
         secret = System.getenv("JWT_SECRET")
     )
+    val dao = UserDaoImpl()
+    val hashingService = HashingServiceImpl()
+    val tokenService = TokenServiceImpl()
     DatabaseSingleton.init()
     configureSecurity(tokenConfig)
     configureMonitoring()
     configureSerialization()
-    configureRouting()
+    configureRouting(hashingService, dao, tokenConfig, tokenService)
 }

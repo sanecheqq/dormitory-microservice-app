@@ -10,7 +10,7 @@ import io.ktor.server.auth.jwt.*
 fun Application.configureSecurity(config: TokenConfig) {
     // Please read the jwt property from the config file if you are using EngineMain
     authentication {
-        jwt {
+        jwt("myAuth") {
             realm = System.getenv("JWT_REALM")
             verifier(
                 JWT

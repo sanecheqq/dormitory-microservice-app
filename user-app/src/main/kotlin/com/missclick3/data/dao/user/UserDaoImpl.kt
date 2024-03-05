@@ -61,20 +61,18 @@ class UserDaoImpl : UserDao {
     }
 
 
-    override suspend fun updateUser(user: User): Boolean {
+    override suspend fun updateUser(
+        id: UUID,
+        emailToChange: String?,
+        phoneNumberToChange: String?,
+        tgUsernameToChange: String?
+    ): Boolean {
         return try {
             dbQuery {
-                Users.update({ Users.username eq user.username }) {row ->
-                    row[username] = user.username
-                    row[name] = user.name
-                    row[surname] = user.surname
-                    row[patronymic] = user.patronymic
-                    row[address] = user.address
-                    row[email] = user.email
-                    row[phoneNumber] = user.phoneNumber
-                    row[tgUsername] = user.tgUsername
-                    row[password] = user.password
-                    row[salt] = user.salt
+                Users.update({ Users.id eq id }) {row ->
+                    row[email] = emailToChange
+                    row[phoneNumber] = phoneNumberToChange
+                    row[tgUsername] = tgUsernameToChange
                 }
                 true
             }

@@ -7,7 +7,7 @@ interface UserDao {
     suspend fun insertNewUser(user: User): Boolean
     suspend fun getUserByUsername(username: String): User?
 
-    suspend fun updateUser(user: User) : Boolean
+    suspend fun updateUser(id: UUID, emailToChange: String?, phoneNumberToChange: String?, tgUsernameToChange: String?) : Boolean
 
     suspend fun getUserById(id: UUID) : User?
 
