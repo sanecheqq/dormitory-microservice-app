@@ -1,10 +1,8 @@
 package com.missclick3.routings
 
 import com.missclick3.data.dao.user.UserDao
-import com.missclick3.messages.AddUserRequest
-import com.missclick3.messages.AuthRequest
-import com.missclick3.messages.AuthResponse
-import com.missclick3.messages.PatchUserRequest
+import com.missclick3.data.models.User
+import com.missclick3.messages.*
 import com.missclick3.security.hashing.HashingService
 import com.missclick3.security.hashing.SaltedHash
 import com.missclick3.security.token.TokenClaim
@@ -73,6 +71,34 @@ fun Route.authenticate() {
 
 fun Route.secretRoutes(dao: UserDao) {
     authenticate("myAuth") {
+        get("/user") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = try {
+                UUID.fromString(principal?.getClaim("userId", String::class).toString())
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.Conflict)
+                return@get
+            }
+
+            val user = dao.getUserById(userId)
+            if (user == null) {
+                call.respond(HttpStatusCode.Conflict, "No such user")
+                return@get
+            }
+
+            call.respond(
+                HttpStatusCode.OK,
+                message = GetUserResponse(
+                    name = user.name,
+                    surname = user.surname,
+                    patronymic = user.patronymic,
+                    email = user.email,
+                    phoneNumber = user.phoneNumber,
+                    tgUsername = user.tgUsername,
+                    address = user.address
+                )
+            )
+        }
         patch("/user") {
             val request = call.receiveNullable<PatchUserRequest>() ?: kotlin.run {
                 call.respond(HttpStatusCode.BadRequest)

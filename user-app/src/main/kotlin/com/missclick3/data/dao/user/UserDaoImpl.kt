@@ -16,7 +16,7 @@ class UserDaoImpl : UserDao {
         patronymic = row[Users.patronymic],
         email = row[Users.email],
         phoneNumber = row[Users.phoneNumber],
-        tgUsername = row[Users.phoneNumber],
+        tgUsername = row[Users.tgUsername],
         address = row[Users.address],
         password = row[Users.password],
         salt = row[Users.salt]
