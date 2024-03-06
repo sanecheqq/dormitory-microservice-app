@@ -20,13 +20,14 @@ class FluoroDaoImpl : FluoroDao {
         expireDate = row[FluoroCertificates.expireDate].toString()
     )
 
-    override suspend fun insertNewFluoro(certificate: FluoroCertificate, userId: UUID): Boolean =
+    override suspend fun upsertFluoro(certificate: FluoroCertificate, userId: UUID): Boolean =
         try {
             dbQuery {
-                FluoroCertificates.upsert(FluoroCertificates.startDate, FluoroCertificates.expireDate) { row ->
+                FluoroCertificates.upsert(FluoroCertificates.startDate, FluoroCertificates.expireDate, FluoroCertificates.userId) { row ->
                     val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
                     row[startDate] = LocalDate.parse(certificate.startDate, formatter)
                     row[expireDate] = LocalDate.parse(certificate.expireDate, formatter)
+                    row[FluoroCertificates.userId] = userId
                 }
             }
             true
