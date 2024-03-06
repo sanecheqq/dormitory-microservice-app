@@ -40,4 +40,18 @@ public class News {
 
     @Column(name = "date")
     private Timestamp date;
+
+    public void addAllImages(List<Image> images) {
+        for (Image image : images) {
+            this.images.add(image);
+            image.setNews(this);
+        }
+    }
+
+    public void addAllDocuments(List<Document> documents) {
+        for (Document document : documents) {
+            this.documents.add(document);
+            document.setNews(this);
+        }
+    }
 }
