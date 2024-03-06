@@ -13,12 +13,21 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
     private final NewsService newsService;
-
+    //TODO: в будущем нужно будет отправлять запрос в юзера на проверку роли/авторизации, чтобы левые типочки не могли заходить на сайт
+    // ХЫЗЫ.
     @PostMapping
     public ResponseEntity<NewsDto> createNews(
             @ModelAttribute @Valid CreateNewsRequest createNewsRequest
     ) {
         return ResponseEntity.ok(newsService.createNews(createNewsRequest));
+    }
+
+    @DeleteMapping("/{news_id}")
+    public ResponseEntity<?> deleteNews(
+            @PathVariable(name = "news_id") String newsId
+    ) {
+        newsService.deleteNews(newsId);
+        return ResponseEntity.ok().build();
     }
 
 }

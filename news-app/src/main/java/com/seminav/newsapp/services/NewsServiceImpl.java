@@ -1,10 +1,13 @@
 package com.seminav.newsapp.services;
 
+import com.seminav.newsapp.exceptions.NewsNotFoundException;
 import com.seminav.newsapp.external.messages.FileDto;
 import com.seminav.newsapp.external.services.CloudStorageService;
 import com.seminav.newsapp.messages.CreateNewsRequest;
 import com.seminav.newsapp.messages.SortType;
 import com.seminav.newsapp.messages.dtos.NewsDto;
+import com.seminav.newsapp.model.Document;
+import com.seminav.newsapp.model.Image;
 import com.seminav.newsapp.model.News;
 import com.seminav.newsapp.model.NewsCategory;
 import com.seminav.newsapp.repositories.NewsRepository;
@@ -78,6 +81,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             imageFileDtos = uploadImagesFuture.get();
             documentFileDtos = uploadDocumentsFuture.get();
+            System.out.println("Images: " + imageFileDtos);
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
         }
@@ -87,11 +91,11 @@ public class NewsServiceImpl implements NewsService {
         news.setCategory(NewsCategory.valueOf(createNewsRequest.category()));
         news.setContent(createNewsRequest.content());
         news.setDate(Timestamp.from(Instant.now()));
-        news.setImages(imageFileDtos.stream()
+        news.addAllImages(imageFileDtos.stream()
                 .map(fileDtoToImageConverter::convert)
                 .toList()
         );
-        news.setDocuments(documentFileDtos.stream()
+        news.addAllDocuments(documentFileDtos.stream()
                 .map(fileDtoToDocumentConverter::convert)
                 .toList()
         );
@@ -100,7 +104,21 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public void deleteNews(String newsId) {
-        return;
+        News news = newsRepo.findById(newsId)
+                .orElseThrow(() -> new NewsNotFoundException("News with id"  + newsId + " not found"));
+
+        List<String> fileIds = new ArrayList<>();
+        fileIds.addAll(news.getImages().stream()
+                .map(Image::getImageId)
+                .toList()
+        );
+        fileIds.addAll(news.getDocuments().stream()
+                .map(Document::getDocumentId)
+                .toList()
+        );
+
+        cloudStorageService.deleteFiles(fileIds);
+        newsRepo.delete(news);
     }
 
     private List<NewsDto> convertListNewsToListNewsDto(List<News> news) {
