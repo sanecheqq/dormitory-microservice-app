@@ -57,31 +57,14 @@ public class NewsServiceImpl implements NewsService {
     public NewsDto createNews(CreateNewsRequest createNewsRequest) {
         List<MultipartFile> images = createNewsRequest.images();
         List<MultipartFile> documents = createNewsRequest.documents();
-        CompletableFuture<List<FileDto>> uploadImagesFuture = CompletableFuture.supplyAsync(
-                () -> cloudStorageService.uploadFiles(images),
-                sendingRequestsExecutor
-        ).handle((result, ex) -> {
-            if (ex != null)
-                return new ArrayList<>();
-            else
-                return result;
-        });
-        CompletableFuture<List<FileDto>> uploadDocumentsFuture = CompletableFuture.supplyAsync(
-                () -> cloudStorageService.uploadFiles(documents),
-                sendingRequestsExecutor
-        ).handle((result, ex) -> {
-            if (ex != null)
-                return new ArrayList<>();
-            else
-                return result;
-        });
+        CompletableFuture<List<FileDto>> uploadImagesFuture = uploadFilesAsync(images);
+        CompletableFuture<List<FileDto>> uploadDocumentsFuture = uploadFilesAsync(documents);
 
         List<FileDto> imageFileDtos = new ArrayList<>();
         List<FileDto> documentFileDtos = new ArrayList<>();
         try {
             imageFileDtos = uploadImagesFuture.get();
             documentFileDtos = uploadDocumentsFuture.get();
-            System.out.println("Images: " + imageFileDtos);
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
         }
@@ -104,8 +87,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public void deleteNews(String newsId) {
-        News news = newsRepo.findById(newsId)
-                .orElseThrow(() -> new NewsNotFoundException("News with id"  + newsId + " not found"));
+        News news = getNewsById(newsId);
 
         List<String> fileIds = new ArrayList<>();
         fileIds.addAll(news.getImages().stream()
@@ -119,6 +101,61 @@ public class NewsServiceImpl implements NewsService {
 
         cloudStorageService.deleteFiles(fileIds);
         newsRepo.delete(news);
+    }
+
+    @Override
+    public NewsDto updateNews(String newsId, String title, String category, String content, List<MultipartFile> images, List<MultipartFile> documents) {
+        News news = getNewsById(newsId);
+        if (title != null) {
+            news.setTitle(title);
+        }
+        if (category != null) {
+            news.setCategory(NewsCategory.valueOf(category));
+        }
+        if (content != null) {
+            news.setContent(content);
+        }
+        CompletableFuture<List<FileDto>> uploadImagesFuture = uploadFilesAsync(images);
+        CompletableFuture<List<FileDto>> uploadDocumentsFuture = uploadFilesAsync(documents);
+
+        List<FileDto> imageFileDtos = new ArrayList<>();
+        List<FileDto> documentFileDtos = new ArrayList<>();
+        try {
+            imageFileDtos = uploadImagesFuture.get();
+            documentFileDtos = uploadDocumentsFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
+        }
+
+        news.addAllImages(imageFileDtos.stream()
+                .map(fileDtoToImageConverter::convert)
+                .toList()
+        );
+
+        news.addAllDocuments(documentFileDtos.stream()
+                .map(fileDtoToDocumentConverter::convert)
+                .toList()
+        );
+
+        return newsToNewsDtoConverter.convert(newsRepo.save(news));
+    }
+
+
+    private CompletableFuture<List<FileDto>> uploadFilesAsync(List<MultipartFile> images) {
+        return CompletableFuture.supplyAsync(
+                () -> cloudStorageService.uploadFiles(images),
+                sendingRequestsExecutor
+        ).handle((result, ex) -> {
+            if (ex != null)
+                return new ArrayList<>();
+            else
+                return result;
+        });
+    }
+
+    private News getNewsById(String newsId) {
+        return newsRepo.findById(newsId)
+                .orElseThrow(() -> new NewsNotFoundException("News with id"  + newsId + " not found"));
     }
 
     private List<NewsDto> convertListNewsToListNewsDto(List<News> news) {

@@ -1,6 +1,7 @@
 package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.messages.CreateNewsRequest;
+import com.seminav.newsapp.messages.UpdateNewsRequest;
 import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.services.NewsService;
 import jakarta.validation.Valid;
@@ -29,5 +30,18 @@ public class AdminController {
         newsService.deleteNews(newsId);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/{news_id}")
+    public ResponseEntity<NewsDto> updateNews(
+            @PathVariable(name = "news_id") String newsId,
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "content", required = false) String content,
+            @ModelAttribute UpdateNewsRequest updateNewsRequest
+    ) {
+        NewsDto newsDto = newsService.updateNews(newsId, title, category, content, updateNewsRequest.images(), updateNewsRequest.documents());
+        return ResponseEntity.ok(newsDto);
+    }
+
 
 }
