@@ -24,7 +24,7 @@ public class NewsController {
     @GetMapping()
     public ResponseEntity<GetNewsResponse> getNews(
             @RequestParam(name = "category", required = false) NewsCategory newsCategory,
-            @RequestParam(name = "search_pattern", defaultValue = "null") String searchPattern, //todo: не работает в БД search_pattern, если он не передан.
+            @RequestParam(name = "search_pattern", defaultValue = "null") String searchPattern,
             @RequestParam(name = "sort_type", defaultValue = "DESCENDING") SortType sortType
     ) {
         var news = newsService.getNews(newsCategory, searchPattern, sortType);
