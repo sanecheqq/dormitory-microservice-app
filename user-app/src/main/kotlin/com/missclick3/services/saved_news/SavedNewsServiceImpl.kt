@@ -8,7 +8,7 @@ import java.util.*
 class SavedNewsServiceImpl(savedNewsRepository: SavedNewsRepository) : SavedNewsService {
     private val repository = savedNewsRepository
 
-    override suspend fun getSavedNews(userId: UUID): List<SavedNews> {
+    override suspend fun getSavedNews(userId: UUID): List<String> {
         return repository.getSavedNews(userId)
     }
 

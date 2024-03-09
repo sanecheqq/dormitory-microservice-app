@@ -4,7 +4,7 @@ import com.missclick3.model.SavedNews
 import java.util.UUID
 
 interface SavedNewsRepository {
-    suspend fun getSavedNews(userId: UUID): List<SavedNews>
+    suspend fun getSavedNews(userId: UUID): List<String>
 
     suspend fun addToSavedNews(newsId: UUID, userId: UUID): Boolean
 

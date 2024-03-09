@@ -7,9 +7,11 @@ import com.missclick3.model.User
 import java.util.*
 
 class SavedNewsRepositoryImpl : SavedNewsRepository {
-    override suspend fun getSavedNews(userId: UUID): List<SavedNews> {
+    override suspend fun getSavedNews(userId: UUID): List<String> {
         return dbQuery {
-            SavedNews.find { SavedNewsTable.userId eq userId }.toList()
+            SavedNews.find { SavedNewsTable.userId eq userId }
+                .map { it.toString() }
+                .toList()
         }
     }
 
