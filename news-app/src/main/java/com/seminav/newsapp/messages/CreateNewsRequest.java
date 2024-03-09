@@ -1,11 +1,17 @@
 package com.seminav.newsapp.messages;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public record CreateNewsRequest(
+    @NotBlank
     String title,
+    @NotBlank
     String category,
+    @NotBlank
     String content,
-    @JsonProperty(value = "image_id")
-    String imageId
+    List<MultipartFile> images,
+    List<MultipartFile> documents
 ) {}

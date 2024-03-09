@@ -1,13 +1,15 @@
 package com.seminav.newsapp.messages.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.seminav.newsapp.external.messages.FileDto;
+
+import java.util.List;
 
 public record NewsDto(
    String id,
    String title,
    String category,
    String content,
-   @JsonProperty(value = "image_id")
-   String imageId,
+   List<FileDto> images,
+   List<FileDto> documents,
    String date
 ) {}

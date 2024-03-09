@@ -16,7 +16,7 @@ public interface NewsRepository extends JpaRepository<News, String> {
     @Query(value = """
         SELECT n from News n
         WHERE (:news_category IS NULL OR n.category = :news_category)
-            AND (:search_pattern IS NULL OR n.title LIKE '%'||:search_pattern||'%')
+            AND (:search_pattern = 'null' OR n.title LIKE '%'||:search_pattern||'%')
     """)
     List<News> getNewsByNewsCategoryAndSearchPatternAndSortByDate(
             @Param("news_category") NewsCategory category,
