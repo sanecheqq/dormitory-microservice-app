@@ -133,6 +133,23 @@ fun Route.adminRoutes(
 
                 call.respond(HttpStatusCode.OK, "User have been changed")
             }
+
+            delete("/{id}") {
+                val id = call.parameters["id"] ?: return@delete call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Id is missing"
+                )
+                val userId = UUID.fromString(id)
+
+                val deleted = userService.deleteUser(userId)
+
+                if (!deleted) {
+                    call.respond(HttpStatusCode.Conflict, "user was not deleted")
+                    return@delete
+                }
+
+                call.respond(HttpStatusCode.OK, "user was deleted")
+            }
         }
     }
 }

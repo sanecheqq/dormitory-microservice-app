@@ -114,10 +114,17 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun deleteUser(id: UUID) {
-        dbQuery {
-            val user = User.findById(id)
-            user?.delete()
+    override suspend fun deleteUser(id: UUID): Boolean {
+        return try {
+            dbQuery {
+                val user = User.findById(id)
+                user?.delete()
+                FluoroCertificate.find { FluoroCertificatesTable.userId eq id }.singleOrNull()?.delete()
+                STDsCertificate.find { STDsCertificatesTable.userId eq id }.singleOrNull()?.delete()
+            }
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 }

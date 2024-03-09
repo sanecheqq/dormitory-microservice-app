@@ -17,7 +17,7 @@ interface UserService {
 
     suspend fun updateUser(id: UUID, request: PatchUserByAdminRequest): Boolean
 
-    suspend fun deleteUser(id: UUID)
+    suspend fun deleteUser(id: UUID): Boolean
 
     suspend fun getUsers(): List<UserDTO>
 }

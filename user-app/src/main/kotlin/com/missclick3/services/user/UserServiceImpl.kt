@@ -48,8 +48,8 @@ class UserServiceImpl(userRepository: UserRepository) : UserService {
         return repository.updateUser(id, request)
     }
 
-    override suspend fun deleteUser(id: UUID) {
-        repository.deleteUser(id)
+    override suspend fun deleteUser(id: UUID) : Boolean{
+        return repository.deleteUser(id)
     }
 
     override suspend fun getUsers(): List<UserDTO> {
