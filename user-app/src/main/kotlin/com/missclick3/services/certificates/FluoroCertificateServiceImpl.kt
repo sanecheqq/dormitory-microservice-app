@@ -11,12 +11,18 @@ class FluoroCertificateServiceImpl(
 ) : CertificateService<FluoroCertificate> {
     private val repository = certificateRepository
 
+    private fun certToCertDTO(fluoroCertificate: FluoroCertificate) = CertificateDTO(
+        id = fluoroCertificate.id.toString(),
+        startDate = fluoroCertificate.startDate.toString(),
+        expireDate = fluoroCertificate.expireDate.toString()
+    )
     override suspend fun createNewCertificate(certificateDTO: CertificateDTO, userId: UUID): Boolean {
         return repository.createNewCertificate(certificateDTO, userId)
     }
 
-    override suspend fun getCertificateByUserId(userId: UUID): FluoroCertificate? {
-        return repository.getCertificateByUserId(userId)
+    override suspend fun getCertificateByUserId(userId: UUID): CertificateDTO? {
+        val certificate = repository.getCertificateByUserId(userId) ?: return null
+        return certToCertDTO(certificate)
     }
 
     override suspend fun deleteCertificateByUserId(userId: UUID) {

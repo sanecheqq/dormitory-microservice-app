@@ -1,5 +1,6 @@
 package com.missclick3.services.user
 
+import com.missclick3.config.DatabaseSingleton.dbQuery
 import com.missclick3.messages.dtos.UserDTO
 import com.missclick3.messages.requests.PatchUserByAdminRequest
 import com.missclick3.messages.requests.PatchUserPersonalInfoRequest
@@ -11,7 +12,7 @@ import java.util.*
 class UserServiceImpl(userRepository: UserRepository) : UserService {
     private val repository = userRepository
 
-    private fun userToUserDTO(user: User) = UserDTO(
+    private suspend fun userToUserDTO(user: User) = UserDTO(
         username = user.username,
         name = user.name,
         surname = user.surname,
@@ -20,7 +21,7 @@ class UserServiceImpl(userRepository: UserRepository) : UserService {
         email = user.email,
         phoneNumber = user.phoneNumber,
         tgUsername = user.tgUsername,
-        address = user.address.address,
+        address = dbQuery{user.address.address},
         password = user.password,
         salt = user.salt
     )
@@ -29,12 +30,14 @@ class UserServiceImpl(userRepository: UserRepository) : UserService {
         return repository.createNewUser(userDTO)
     }
 
-    override suspend fun getUserById(id: UUID): User? {
-        return repository.getUserById(id)
+    override suspend fun getUserById(id: UUID): UserDTO? {
+        val user = repository.getUserById(id) ?: return null
+        return userToUserDTO(user)
     }
 
-    override suspend fun getUserByUsername(username: String): User? {
-        return repository.getUserByUsername(username)
+    override suspend fun getUserByUsername(username: String): UserDTO? {
+        val user = repository.getUserByUsername(username) ?: return null
+        return userToUserDTO(user)
     }
 
     override suspend fun updateUserPersonalInfo(id: UUID, request: PatchUserPersonalInfoRequest): Boolean {

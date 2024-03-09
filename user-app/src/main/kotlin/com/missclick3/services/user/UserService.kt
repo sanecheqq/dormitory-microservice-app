@@ -9,9 +9,9 @@ import java.util.UUID
 interface UserService {
     suspend fun createNewUser(userDTO: UserDTO): Boolean
 
-    suspend fun getUserById(id: UUID): User?
+    suspend fun getUserById(id: UUID): UserDTO?
 
-    suspend fun getUserByUsername(username: String): User?
+    suspend fun getUserByUsername(username: String): UserDTO?
 
     suspend fun updateUserPersonalInfo(id: UUID, request: PatchUserPersonalInfoRequest): Boolean
 

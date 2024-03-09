@@ -4,10 +4,9 @@ import com.missclick3.config.DatabaseSingleton.dbQuery
 import com.missclick3.messages.dtos.UserDTO
 import com.missclick3.messages.requests.PatchUserByAdminRequest
 import com.missclick3.messages.requests.PatchUserPersonalInfoRequest
-import com.missclick3.model.DormitoryAddress
-import com.missclick3.model.DormitoryAddressesTable
-import com.missclick3.model.User
-import com.missclick3.model.UsersTable
+import com.missclick3.model.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class UserRepositoryImpl : UserRepository {
@@ -79,7 +78,27 @@ class UserRepositoryImpl : UserRepository {
                 user?.name = request.name!!
                 user?.surname = request.surname!!
                 user?.patronymic = request.patronymic
-                user?.address = DormitoryAddress.find { DormitoryAddressesTable.address eq request.address!! }.singleOrNull()!!
+                user?.address = DormitoryAddress.find { DormitoryAddressesTable.address eq request.address }.singleOrNull()!!
+
+                val fluroCertDTO = request.fluroCert
+                val stdsCertDTO = request.fluroCert
+                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                if (fluroCertDTO != null) {
+                    FluoroCertificate.find { FluoroCertificatesTable.userId eq id }.singleOrNull()?.delete()
+                    FluoroCertificate.new {
+                        startDate = LocalDate.parse(fluroCertDTO.startDate, formatter)
+                        expireDate = LocalDate.parse(fluroCertDTO.expireDate, formatter)
+                        this.user = user!!
+                    }
+                }
+                if (stdsCertDTO != null) {
+                    STDsCertificate.find {STDsCertificatesTable.userId eq id}.singleOrNull()?.delete()
+                    STDsCertificate.new {
+                        startDate = LocalDate.parse(stdsCertDTO.startDate, formatter)
+                        expireDate = LocalDate.parse(stdsCertDTO.expireDate, formatter)
+                        this.user = user!!
+                    }
+                }
             }
             true
         } catch (e: Exception) {

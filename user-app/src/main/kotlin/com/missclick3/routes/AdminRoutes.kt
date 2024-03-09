@@ -7,12 +7,20 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import com.missclick3.messages.dtos.UserDTO
 import com.missclick3.messages.requests.CreateUserRequest
+import com.missclick3.messages.requests.PatchUserByAdminRequest
+import com.missclick3.messages.responses.UserResponseFromAdmin
+import com.missclick3.model.FluoroCertificate
+import com.missclick3.model.STDsCertificate
 import com.missclick3.security.hashing.HashingService
+import com.missclick3.services.certificates.CertificateService
 import com.missclick3.services.user.UserService
+import java.util.*
 
 fun Route.adminRoutes(
     hashingService: HashingService,
-    userService: UserService
+    userService: UserService,
+    fluoroService: CertificateService<FluoroCertificate>,
+    stdsService: CertificateService<STDsCertificate>
 ) {
     route("/users/admin") {
         post("/add-user") {
@@ -52,17 +60,79 @@ fun Route.adminRoutes(
             )
 
             val inserted = userService.createNewUser(userDTO)
-
             if (!inserted) {
                 call.respond(HttpStatusCode.Conflict, "Пользователь ${userDTO.username} не добавлен")
                 return@post
             }
 
-            call.respond(HttpStatusCode.OK, userDTO)
-        }
+            call.respond(
+                HttpStatusCode.OK,
+                UserDTO(
+                    username = request.username,
+                    name = request.name,
+                    surname = request.surname,
+                    patronymic = request.patronymic,
+                    address = request.address,
+                    password = "",
+                    salt = ""
+                )
+            )
 
-        get ("/students") {
-            call.respond(HttpStatusCode.OK, message = userService.getUsers())
+        }
+        route("/students"){
+            get () {
+                call.respond(HttpStatusCode.OK, message = userService.getUsers())
+            }
+
+            get("/{id}") {
+                val id = call.parameters["id"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Id is missing"
+                )
+                val userId = UUID.fromString(id)
+                val userDTO = userService.getUserById(userId)
+                val fluoroDTO = fluoroService.getCertificateByUserId(userId)
+                val stdsDTO = stdsService.getCertificateByUserId(userId)
+                if (userDTO == null) {
+                    call.respond(HttpStatusCode.Conflict, "No user with id: $id")
+                    return@get
+                }
+
+                call.respond(
+                    HttpStatusCode.OK,
+                    UserResponseFromAdmin(
+                        userDTO,
+                        fluoroDTO,
+                        stdsDTO
+                    )
+                )
+            }
+
+            patch("/{id}") {
+                val id = call.parameters["id"] ?: return@patch call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Id is missing"
+                )
+
+                val request = call.receiveNullable<PatchUserByAdminRequest>() ?: kotlin.run {
+                    call.respond(HttpStatusCode.BadRequest, "BAD REQUEST")
+                    return@patch
+                }
+
+                val userId = UUID.fromString(id)
+
+                val updated = userService.updateUser(
+                    userId,
+                    request
+                )
+
+                if (!updated) {
+                    call.respond(HttpStatusCode.Conflict, "not able to update user")
+                    return@patch
+                }
+
+                call.respond(HttpStatusCode.OK, "User have been changed")
+            }
         }
     }
 }

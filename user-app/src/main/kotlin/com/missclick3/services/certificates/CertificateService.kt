@@ -6,7 +6,7 @@ import java.util.*
 interface CertificateService<T> {
     suspend fun createNewCertificate(certificateDTO: CertificateDTO, userId: UUID) : Boolean
 
-    suspend fun getCertificateByUserId(userId: UUID) : T?
+    suspend fun getCertificateByUserId(userId: UUID) : CertificateDTO?
 
     suspend fun deleteCertificateByUserId(userId: UUID)
 

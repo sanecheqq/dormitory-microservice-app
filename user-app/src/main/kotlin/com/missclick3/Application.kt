@@ -2,6 +2,8 @@ package com.missclick3
 
 import com.missclick3.config.DatabaseSingleton
 import com.missclick3.plugins.*
+import com.missclick3.repositories.certificates.FluoroCertificateRepositoryImpl
+import com.missclick3.repositories.certificates.STDsCertificateRepositoryImpl
 import com.missclick3.security.hashing.HashingServiceImpl
 import com.missclick3.security.token.TokenConfig
 import com.missclick3.security.token.TokenServiceImpl
@@ -9,6 +11,8 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.missclick3.repositories.user.UserRepositoryImpl
+import com.missclick3.services.certificates.FluoroCertificateServiceImpl
+import com.missclick3.services.certificates.STDsCertificateServiceImpl
 import com.missclick3.services.user.UserServiceImpl
 
 fun main() {
@@ -23,12 +27,19 @@ fun Application.module() {
         expiresIn = 365L * 1000L * 60L * 60L * 24L,
         secret = System.getenv("JWT_SECRET")
     )
-    val repository = UserRepositoryImpl()
-    val userService = UserServiceImpl(repository)
+    val userRepository = UserRepositoryImpl()
+    val userService = UserServiceImpl(userRepository)
+
+    val fluroRepository = FluoroCertificateRepositoryImpl()
+    val fluroService = FluoroCertificateServiceImpl(fluroRepository)
+
+    val stdsRepository = STDsCertificateRepositoryImpl()
+    val stdsService = STDsCertificateServiceImpl(stdsRepository)
+
     val hashingService = HashingServiceImpl()
     val tokenService = TokenServiceImpl()
     DatabaseSingleton.init()
     configureSecurity(tokenConfig)
     configureSerialization()
-    configureRouting(userService, hashingService)
+    configureRouting(userService, hashingService, fluroService, stdsService)
 }
