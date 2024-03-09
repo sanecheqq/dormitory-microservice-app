@@ -5,7 +5,7 @@ import com.missclick3.messages.dtos.UserDTO
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserResponseFromAdmin(
+data class UserInfoResponse(
     val userDTO: UserDTO,
     val fluoroCertificateDTO: CertificateDTO?,
     val stdsCertificateDTO: CertificateDTO?

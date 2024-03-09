@@ -8,7 +8,7 @@ import io.ktor.server.routing.*
 import com.missclick3.messages.dtos.UserDTO
 import com.missclick3.messages.requests.CreateUserRequest
 import com.missclick3.messages.requests.PatchUserByAdminRequest
-import com.missclick3.messages.responses.UserResponseFromAdmin
+import com.missclick3.messages.responses.UserInfoResponse
 import com.missclick3.model.FluoroCertificate
 import com.missclick3.model.STDsCertificate
 import com.missclick3.security.hashing.HashingService
@@ -100,7 +100,7 @@ fun Route.adminRoutes(
 
                 call.respond(
                     HttpStatusCode.OK,
-                    UserResponseFromAdmin(
+                    UserInfoResponse(
                         userDTO,
                         fluoroDTO,
                         stdsDTO

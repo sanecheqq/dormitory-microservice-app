@@ -13,6 +13,6 @@ data class UserDTO(
     val phoneNumber: String? = "",
     val tgUsername: String? = "",
     val address: String,
-    val password: String,
-    val salt: String
+    val password: String? = "",
+    val salt: String? = ""
 )
