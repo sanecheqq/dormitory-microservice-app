@@ -4,6 +4,7 @@ import com.missclick3.config.DatabaseSingleton
 import com.missclick3.plugins.*
 import com.missclick3.repositories.certificates.FluoroCertificateRepositoryImpl
 import com.missclick3.repositories.certificates.STDsCertificateRepositoryImpl
+import com.missclick3.repositories.saved_news.SavedNewsRepositoryImpl
 import com.missclick3.security.hashing.HashingServiceImpl
 import com.missclick3.security.token.TokenConfig
 import com.missclick3.security.token.TokenServiceImpl
@@ -13,6 +14,8 @@ import io.ktor.server.netty.*
 import com.missclick3.repositories.user.UserRepositoryImpl
 import com.missclick3.services.certificates.FluoroCertificateServiceImpl
 import com.missclick3.services.certificates.STDsCertificateServiceImpl
+import com.missclick3.services.saved_news.SavedNewsService
+import com.missclick3.services.saved_news.SavedNewsServiceImpl
 import com.missclick3.services.user.UserServiceImpl
 import com.orbitz.consul.Consul
 import com.orbitz.consul.model.agent.ImmutableRegistration
@@ -47,10 +50,21 @@ fun Application.module() {
     val stdsRepository = STDsCertificateRepositoryImpl()
     val stdsService = STDsCertificateServiceImpl(stdsRepository)
 
+    val savedNewsRepository = SavedNewsRepositoryImpl()
+    val savedNewsService = SavedNewsServiceImpl(savedNewsRepository)
+
     val hashingService = HashingServiceImpl()
     val tokenService = TokenServiceImpl()
     DatabaseSingleton.init()
     configureSecurity(tokenConfig)
     configureSerialization()
-    configureRouting(userService, hashingService, fluroService, stdsService)
+    configureRouting(
+        userService,
+        hashingService,
+        fluroService,
+        stdsService,
+        tokenService,
+        tokenConfig,
+        savedNewsService
+    )
 }

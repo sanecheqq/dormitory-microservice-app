@@ -45,6 +45,29 @@ fun Route.savedNewsRoutes(
 
                 val added = savedNewsService.addToSavedNews(UUID.fromString(request.newsId), userId)
             }
+            delete("/{id}") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = try {
+                    UUID.fromString(principal?.getClaim("userId", String::class).toString())
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.Conflict)
+                    return@delete
+                }
+
+                val newsId = call.parameters["id"] ?: return@delete call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Id is missing"
+                )
+
+                val deleted = savedNewsService.deleteFromSavedNews(newsId, userId)
+
+                if (!deleted) {
+                    call.respond(HttpStatusCode.Conflict, "was not deleted from saved news")
+                    return@delete
+                }
+
+                call.respond(HttpStatusCode.OK, "deleted from saved news")
+            }
         }
     }
 }
