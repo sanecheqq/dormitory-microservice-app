@@ -14,10 +14,21 @@ import com.missclick3.repositories.user.UserRepositoryImpl
 import com.missclick3.services.certificates.FluoroCertificateServiceImpl
 import com.missclick3.services.certificates.STDsCertificateServiceImpl
 import com.missclick3.services.user.UserServiceImpl
+import com.orbitz.consul.Consul
+import com.orbitz.consul.model.agent.ImmutableRegistration
+
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+    val server = embeddedServer(Netty, port = 8085, host = "0.0.0.0", module = Application::module)
+    val consulClient = Consul.builder().withUrl("http://localhost:8500").build()
+    val service = ImmutableRegistration.builder()
+        .id("user-${server.environment.connectors[0].port}")
+        .name("user-app")
+        .address("localhost")
+        .port(server.environment.connectors[0].port)
+        .build()
+    consulClient.agentClient().register(service)
+    server.start(wait = true)
 }
 
 fun Application.module() {

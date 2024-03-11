@@ -53,4 +53,7 @@ dependencies {
 
     //apache comons validator
     implementation("commons-validator:commons-validator:1.8.0")
+
+    //consul
+    implementation("com.orbitz.consul:consul-client:1.5.3")
 }

@@ -35,8 +35,8 @@ class UserRepositoryImpl : UserRepository {
                 email = userDTO.email
                 phoneNumber = userDTO.phoneNumber
                 tgUsername = userDTO.tgUsername
-                password = userDTO.password
-                salt = userDTO.salt
+                password = userDTO.password.toString()
+                salt = userDTO.salt.toString()
             }
         }
         true
