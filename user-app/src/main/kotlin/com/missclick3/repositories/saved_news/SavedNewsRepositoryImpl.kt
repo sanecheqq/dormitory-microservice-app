@@ -5,6 +5,7 @@ import com.missclick3.model.SavedNews
 import com.missclick3.model.SavedNewsTable
 import com.missclick3.model.User
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import java.util.*
 
 class SavedNewsRepositoryImpl : SavedNewsRepository {
@@ -32,6 +33,21 @@ class SavedNewsRepositoryImpl : SavedNewsRepository {
             false
         }
     }
+
+    override suspend fun deleteNewsReferenceForAllUsers(newsId: String): Boolean {
+        return try {
+            dbQuery {
+                SavedNews.find { SavedNewsTable.newsId eq newsId }
+                    .toList()
+                    .forEach(SavedNews::delete)
+                true
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
 
     override suspend fun deleteFromSavedNews(newsId: String, userId: UUID): Boolean {
         return try {

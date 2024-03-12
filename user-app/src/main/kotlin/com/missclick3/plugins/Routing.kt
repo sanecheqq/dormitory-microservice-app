@@ -24,7 +24,7 @@ fun Application.configureRouting(
     routing {
         adminRoutes(hashingService, userService, fluoroService, stdsService)
         authRoutes(tokenConfig, hashingService, tokenService, userService)
-        savedNewsRoutes(savedNewsService)
+        savedNewsRoutes(savedNewsService, userService)
         authenticate()
         userRoutes(userService, fluoroService, stdsService, savedNewsService)
     }

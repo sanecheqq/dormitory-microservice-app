@@ -37,7 +37,6 @@ fun Route.adminRoutes(
                     call.respond(HttpStatusCode.Conflict)
                     return@intercept finish()
                 }
-                // Добавьте вашу дополнительную проверку здесь, например, проверку роли пользователя
                 val user = userService.getUserById(userId)
                 if (user == null || user.role != "ADMIN") {
                     call.respond(HttpStatusCode.Conflict, "You are not an admin")

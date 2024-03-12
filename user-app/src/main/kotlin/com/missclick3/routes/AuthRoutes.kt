@@ -14,9 +14,11 @@ import com.missclick3.services.user.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.util.*
 
 fun Route.authRoutes(
     tokenConfig: TokenConfig,
@@ -24,6 +26,23 @@ fun Route.authRoutes(
     tokenService: TokenService,
     userService: UserService
 ) {
+    authenticate("myAuth") {
+        get("/authenticate") {
+            val principal = call.principal<JWTPrincipal>()
+            val userRole = try {
+                principal?.getClaim("userRole", String::class)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.Conflict)
+                return@get
+            }
+            if (userRole == null) {
+                call.respond(HttpStatusCode.Conflict, "Ты никто")
+                return@get
+            }
+            call.respond(HttpStatusCode.OK, userRole)
+        }
+    }
+
     route("/auth") {
         post("/login") {
             val request = call.receiveNullable<LoginRequest>() ?: kotlin.run {
@@ -56,6 +75,10 @@ fun Route.authRoutes(
                 TokenClaim(
                     name = "userId",
                     value = userDTO.id!!
+                ),
+                TokenClaim(
+                    name = "userRole",
+                    value = userDTO.role
                 )
             )
 

@@ -1,8 +1,8 @@
 package com.missclick3.routes
 
-import com.missclick3.messages.requests.AddSavedNewsRequest
-import com.missclick3.routes.authenticate
+import com.missclick3.messages.requests.SavedNewsRequest
 import com.missclick3.services.saved_news.SavedNewsService
+import com.missclick3.services.user.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -13,7 +13,8 @@ import io.ktor.server.routing.*
 import java.util.*
 
 fun Route.savedNewsRoutes(
-    savedNewsService: SavedNewsService
+    savedNewsService: SavedNewsService,
+    userService: UserService
 ) {
     authenticate("myAuth") {
         route("/saved-news") {
@@ -38,7 +39,7 @@ fun Route.savedNewsRoutes(
                     return@post
                 }
 
-                val request = call.receiveNullable<AddSavedNewsRequest>() ?: kotlin.run {
+                val request = call.receiveNullable<SavedNewsRequest>() ?: kotlin.run {
                     call.respond(HttpStatusCode.BadRequest)
                     return@post
                 }
@@ -73,6 +74,39 @@ fun Route.savedNewsRoutes(
                 }
 
                 call.respond(HttpStatusCode.OK, "deleted from saved news")
+            }
+
+            route("/delete-news-completely") {
+                intercept(ApplicationCallPipeline.Call) {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = try {
+                        UUID.fromString(principal?.getClaim("userId", String::class).toString())
+                    } catch (e: Exception) {
+                        call.respond(HttpStatusCode.Conflict)
+                        return@intercept finish()
+                    }
+                    // Добавьте вашу дополнительную проверку здесь, например, проверку роли пользователя
+                    val user = userService.getUserById(userId)
+                    if (user == null || user.role != "ADMIN") {
+                        call.respond(HttpStatusCode.Conflict, "You are not an admin")
+                        return@intercept finish()
+                    }
+                }
+                delete {
+                    val request = call.receiveNullable<SavedNewsRequest>() ?: kotlin.run {
+                        call.respond(HttpStatusCode.BadRequest)
+                        return@delete
+                    }
+
+                    val deleted = savedNewsService.deleteNewsReferenceForAllUsers(request.newsId)
+
+                    if (!deleted) {
+                        call.respond(HttpStatusCode.Conflict, "news was not deleted")
+                        return@delete
+                    }
+
+                    call.respond(HttpStatusCode.OK, "news was deleted")
+                }
             }
         }
     }

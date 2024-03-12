@@ -9,4 +9,6 @@ interface SavedNewsService {
     suspend fun addToSavedNews(newsId: UUID, userId: UUID): Boolean
 
     suspend fun deleteFromSavedNews(newsId: String, userId: UUID): Boolean
+
+    suspend fun deleteNewsReferenceForAllUsers(newsId: String): Boolean
 }
