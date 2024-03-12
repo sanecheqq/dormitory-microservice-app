@@ -1,5 +1,6 @@
 package com.missclick3.model
 
+import com.missclick3.util.UserRole
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -8,6 +9,7 @@ import java.util.*
 
 object UsersTable: UUIDTable("users") {
     val username = varchar("username", 128).uniqueIndex()
+    val role = enumerationByName("role", 10, UserRole::class)
     val name = varchar("name", 128)
     val surname = varchar("surname", 128)
     val patronymic = varchar("patronymic", 128).nullable()
@@ -24,6 +26,7 @@ class User(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object: UUIDEntityClass<User>(UsersTable)
 
     var username by UsersTable.username
+    var role by UsersTable.role
     var name by UsersTable.name
     var surname by UsersTable.surname
     var patronymic by UsersTable.patronymic

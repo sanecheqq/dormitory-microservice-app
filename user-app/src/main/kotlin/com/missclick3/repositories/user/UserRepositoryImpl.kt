@@ -5,6 +5,7 @@ import com.missclick3.messages.dtos.UserDTO
 import com.missclick3.messages.requests.PatchUserByAdminRequest
 import com.missclick3.messages.requests.PatchUserPersonalInfoRequest
 import com.missclick3.model.*
+import com.missclick3.util.UserRole
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -12,6 +13,7 @@ import java.util.*
 class UserRepositoryImpl : UserRepository {
     private fun userToUserDTO(user: User) = UserDTO(
         username = user.username,
+        role = user.role.toString(),
         name = user.name,
         surname = user.surname,
         patronymic = user.patronymic,
@@ -28,6 +30,7 @@ class UserRepositoryImpl : UserRepository {
         dbQuery {
             User.new {
                 username = userDTO.username
+                role = UserRole.valueOf(userDTO.role)
                 name = userDTO.name
                 surname = userDTO.surname
                 patronymic = userDTO.patronymic
@@ -74,9 +77,10 @@ class UserRepositoryImpl : UserRepository {
         return try {
             dbQuery {
                 val user = User.findById(id)
-                user?.username = request.username!!
-                user?.name = request.name!!
-                user?.surname = request.surname!!
+                user?.role = UserRole.valueOf(request.role)
+                user?.username = request.username
+                user?.name = request.name
+                user?.surname = request.surname
                 user?.patronymic = request.patronymic
                 user?.address = DormitoryAddress.find { DormitoryAddressesTable.address eq request.address }.singleOrNull()!!
 

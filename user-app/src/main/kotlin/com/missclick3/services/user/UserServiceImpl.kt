@@ -23,7 +23,8 @@ class UserServiceImpl(userRepository: UserRepository) : UserService {
         tgUsername = user.tgUsername,
         address = dbQuery{user.address.address},
         password = user.password,
-        salt = user.salt
+        salt = user.salt,
+        role = user.role.toString()
     )
 
     override suspend fun createNewUser(userDTO: UserDTO): Boolean {

@@ -56,7 +56,8 @@ fun Route.userRoutes(
                     email = userDTO.email,
                     phoneNumber = userDTO.phoneNumber,
                     tgUsername = userDTO.tgUsername,
-                    address = userDTO.address
+                    address = userDTO.address,
+                    role = userDTO.role
                 )
                 val fluoroCertDTO = fluoroService.getCertificateByUserId(userId)
                 val stdsCertificate = stdsService.getCertificateByUserId(userId)

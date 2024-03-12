@@ -44,6 +44,12 @@ fun Route.savedNewsRoutes(
                 }
 
                 val added = savedNewsService.addToSavedNews(UUID.fromString(request.newsId), userId)
+                if (!added) {
+                    call.respond(HttpStatusCode.Conflict, "Айди новости не добавлено")
+                    return@post
+                }
+
+                call.respond(HttpStatusCode.OK, "Айди новости добавлено")
             }
             delete("/{id}") {
                 val principal = call.principal<JWTPrincipal>()

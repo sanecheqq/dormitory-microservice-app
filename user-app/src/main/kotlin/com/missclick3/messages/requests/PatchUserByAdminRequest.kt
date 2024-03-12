@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class PatchUserByAdminRequest(
     val username: String,
     val name: String,
+    val role: String,
     val surname: String,
     val patronymic: String?,
     val address: String,

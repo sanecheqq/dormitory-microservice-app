@@ -56,7 +56,8 @@ fun Route.adminRoutes(
                 patronymic = request.patronymic,
                 address = request.address,
                 password = saltedHash.hash,
-                salt = saltedHash.salt
+                salt = saltedHash.salt,
+                role = request.role
             )
 
             val inserted = userService.createNewUser(userDTO)
@@ -69,6 +70,7 @@ fun Route.adminRoutes(
                 HttpStatusCode.OK,
                 UserDTO(
                     username = request.username,
+                    role = request.role,
                     name = request.name,
                     surname = request.surname,
                     patronymic = request.patronymic,

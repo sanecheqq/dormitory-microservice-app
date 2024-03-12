@@ -11,7 +11,7 @@ class SavedNewsRepositoryImpl : SavedNewsRepository {
     override suspend fun getSavedNews(userId: UUID): List<String> {
         return dbQuery {
             SavedNews.find { SavedNewsTable.userId eq userId }
-                .map { it.toString() }
+                .map { it.newsId }
                 .toList()
         }
     }
@@ -19,9 +19,12 @@ class SavedNewsRepositoryImpl : SavedNewsRepository {
     override suspend fun addToSavedNews(newsId: UUID, userId: UUID): Boolean {
         return try {
             dbQuery {
-                SavedNews.new {
-                    this.newsId = newsId.toString()
-                    user = User.findById(userId)!!
+                val savedNews = SavedNews.find {SavedNewsTable.newsId eq newsId.toString() and (SavedNewsTable.userId eq userId)}.singleOrNull()
+                if (savedNews == null) {
+                    SavedNews.new {
+                        this.newsId = newsId.toString()
+                        user = User.findById(userId)!!
+                    }
                 }
             }
             true
