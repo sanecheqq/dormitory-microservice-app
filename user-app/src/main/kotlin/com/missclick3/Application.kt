@@ -19,6 +19,8 @@ import com.missclick3.services.saved_news.SavedNewsServiceImpl
 import com.missclick3.services.user.UserServiceImpl
 import com.orbitz.consul.Consul
 import com.orbitz.consul.model.agent.ImmutableRegistration
+import io.ktor.http.*
+import io.ktor.server.plugins.cors.routing.*
 
 
 fun main() {
@@ -35,6 +37,18 @@ fun main() {
 }
 
 fun Application.module() {
+    install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        anyHost()
+        allowCredentials = true
+    }
     val tokenConfig = TokenConfig(
         issuer = System.getenv("JWT_ISSUER"),
         audience = System.getenv("JWT_AUDIENCE"),

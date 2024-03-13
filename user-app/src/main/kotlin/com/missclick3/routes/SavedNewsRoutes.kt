@@ -76,7 +76,7 @@ fun Route.savedNewsRoutes(
                 call.respond(HttpStatusCode.OK, "deleted from saved news")
             }
 
-            route("/delete-news-completely") {
+            route("/followers") {
                 intercept(ApplicationCallPipeline.Call) {
                     val principal = call.principal<JWTPrincipal>()
                     val userId = try {
