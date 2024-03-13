@@ -1,5 +1,6 @@
 package com.seminav.newsapp.controllers;
 
+import com.seminav.newsapp.external.services.AuthService;
 import com.seminav.newsapp.messages.GetNewsResponse;
 import com.seminav.newsapp.messages.GetSavedNewsRequest;
 import com.seminav.newsapp.messages.GetSavedNewsResponse;
@@ -20,21 +21,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NewsController {
     private final NewsService newsService;
+    private final AuthService authService;
 
     @GetMapping()
     public ResponseEntity<GetNewsResponse> getNews(
             @RequestParam(name = "category", required = false) NewsCategory newsCategory,
             @RequestParam(name = "search_pattern", defaultValue = "null") String searchPattern,
-            @RequestParam(name = "sort_type", defaultValue = "DESCENDING") SortType sortType
+            @RequestParam(name = "sort_type", defaultValue = "DESCENDING") SortType sortType,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ) {
+        authService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
         var news = newsService.getNews(newsCategory, searchPattern, sortType);
         return ResponseEntity.ok(new GetNewsResponse(news));
     }
 
     @GetMapping("/saved")
     public ResponseEntity<GetSavedNewsResponse> getSavedNews(
-            @RequestBody @Valid GetSavedNewsRequest getSavedNewsRequest
+            @RequestBody @Valid GetSavedNewsRequest getSavedNewsRequest,
+            @RequestHeader("Authorization") String authorizationHeader
     ) {
+        authService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
         //TODO: суть - кидать запрос юзеру, получать оттуда список АЙДИшников новостей, возвращать - список дтошек
         List<NewsDto> savedNews = newsService.getSavedNews(getSavedNewsRequest.idsOfNews());
         return ResponseEntity.ok(new GetSavedNewsResponse(savedNews));
