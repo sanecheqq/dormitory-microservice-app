@@ -56,4 +56,7 @@ dependencies {
 
     //consul
     implementation("com.orbitz.consul:consul-client:1.5.3")
+
+    //cors
+    implementation("io.ktor:ktor-server-cors:$ktor_version")
 }
