@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 public class ImageToFileDtoConverter implements Converter<Image, FileDto> {
     @Override
     public FileDto convert(Image image) {
-        return new FileDto(image.getImageId(), image.getUrl());
+        return new FileDto(
+                image.getImageId(),
+                image.getImageName(),
+                image.getUrl()
+        );
     }
 }

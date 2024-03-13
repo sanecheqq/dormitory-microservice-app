@@ -72,7 +72,7 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                 throw new RuntimeException(e.getMessage());
             }
             String photoUrl = s3Client.getUrl(bucketName, fileId).toExternalForm();
-            return new FileDto(fileId, photoUrl);
+            return new FileDto(fileId, file.getOriginalFilename(), photoUrl);
         }, uploadExecutor);
     }
 

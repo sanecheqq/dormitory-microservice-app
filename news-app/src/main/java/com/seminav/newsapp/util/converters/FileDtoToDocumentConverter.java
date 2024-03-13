@@ -11,6 +11,7 @@ public class FileDtoToDocumentConverter implements Converter<FileDto, Document> 
     public Document convert(FileDto fileDto) {
         Document doc = new Document();
         doc.setDocumentId(fileDto.fileId());
+        doc.setFileName(fileDto.fileName());
         doc.setUrl(fileDto.url());
         return doc;
     }
