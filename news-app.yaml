@@ -19,9 +19,24 @@ components:
           type: string
         content:
           type: string
-        imageUrl:
-          type: string
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileDto"
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileDto"
         date:
+          type: string
+    FileDto:
+      title: object
+      required: [file_id, url]
+      properties:
+        file_id:
+          type: string
+          format: uuid
+        url:
           type: string
     GetNewsResponse:
       type: object
@@ -60,7 +75,7 @@ paths:
           name: search_pattern
           schema:
             type: string 
-          description: Паттерн для поска новости по заголовку и по телу
+          description: Паттерн для поиска новости по заголовку и по телу (default="null")
           required: false
         - in: query
           name: sort_type
@@ -75,9 +90,8 @@ paths:
           schema:
             type: string
             enum:
-              - A
-              - B
-              - C
+              - ORDERS
+              - NEWS
           required: false
       responses:
         200:
