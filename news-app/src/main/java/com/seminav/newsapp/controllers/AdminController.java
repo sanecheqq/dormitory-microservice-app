@@ -1,7 +1,7 @@
 package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.exceptions.NotEnoughRootsException;
-import com.seminav.newsapp.external.services.AuthService;
+import com.seminav.newsapp.external.services.ExternalUserService;
 import com.seminav.newsapp.messages.CreateNewsRequest;
 import com.seminav.newsapp.messages.UpdateNewsRequest;
 import com.seminav.newsapp.messages.dtos.NewsDto;
@@ -16,15 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
     private final NewsService newsService;
-    private final AuthService authService;
-    //TODO: в будущем нужно будет отправлять запрос в юзера на проверку роли/авторизации, чтобы левые типочки не могли заходить на сайт
-    // ХЫЗЫ.
+    private final ExternalUserService externalUserService;
+
     @PostMapping("/news")
     public ResponseEntity<NewsDto> createNews(
             @ModelAttribute @Valid CreateNewsRequest createNewsRequest,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        checkRoleOrElseThrow(authService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
         return ResponseEntity.ok(newsService.createNews(createNewsRequest));
     }
 
@@ -33,7 +32,7 @@ public class AdminController {
             @PathVariable(name = "news_id") String newsId,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        checkRoleOrElseThrow(authService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
         newsService.deleteNews(newsId);
         return ResponseEntity.ok().build();
     }
@@ -47,8 +46,19 @@ public class AdminController {
             @ModelAttribute UpdateNewsRequest updateNewsRequest,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        checkRoleOrElseThrow(authService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
         NewsDto newsDto = newsService.updateNews(newsId, title, category, content, updateNewsRequest.images(), updateNewsRequest.documents());
+        return ResponseEntity.ok(newsDto);
+    }
+
+    @PutMapping("news/{news_id}")
+    public ResponseEntity<NewsDto> putNews(
+            @PathVariable(name = "news_id") String newsId,
+            @ModelAttribute @Valid CreateNewsRequest createNewsRequest,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        NewsDto newsDto = newsService.putNews(newsId, createNewsRequest);
         return ResponseEntity.ok(newsDto);
     }
 

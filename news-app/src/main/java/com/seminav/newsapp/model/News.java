@@ -54,4 +54,18 @@ public class News {
             document.setNews(this);
         }
     }
+
+    public void removeAllImages() {
+        for (Image image : this.images) {
+            image.setNews(null);
+        }
+        this.images.clear();
+    }
+
+    public void removeAllDocuments() {
+        for (Document document : this.documents) {
+            documents.remove(document);
+            document.setNews(null);
+        }
+    }
 }
