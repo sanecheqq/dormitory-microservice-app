@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -223,11 +222,5 @@ public class NewsServiceImpl implements NewsService {
     private News getNewsById(String newsId) {
         return newsRepo.findById(newsId)
                 .orElseThrow(() -> new NewsNotFoundException("News with id"  + newsId + " not found"));
-    }
-
-    private List<NewsDto> convertListNewsToListNewsDto(List<News> news) {
-        return news.stream()
-                .map(newsToNewsDtoConverter::convert)
-                .collect(Collectors.toList());
     }
 }
