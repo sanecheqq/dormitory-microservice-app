@@ -92,11 +92,26 @@ fun Route.userRoutes(
                         || request.phoneNumber.isBlank()
                 val isTgUsernameValid = Regex("^@[a-zA-Z0-9_]{5,32}$").matches(request.tgUsername!!)
                         || request.tgUsername.isBlank()
-                if (!isEmailValid || !isTgUsernameValid || !isPhoneNumberValid) {
-                    call.respond(HttpStatusCode.Conflict, "Incorrect options")
-                    return@patch
+
+//                if (!isEmailValid || !isTgUsernameValid || !isPhoneNumberValid) {
+//                    call.respond(HttpStatusCode.Conflict, "Incorrect options")
+//                    return@patch
+//                }
+                val map = hashMapOf<String, String>()
+                if (!isEmailValid) {
+                    map["email"] = "Некорректный email"
+                }
+                if (!isPhoneNumberValid) {
+                    map["phoneNumber"] = "Некорректный номер телефона"
+                }
+                if (!isTgUsernameValid) {
+                    map["tgUsername"] = "Некорректный логин telegram"
                 }
 
+                if (map.isNotEmpty()) {
+                    call.respond(HttpStatusCode.Conflict, map)
+                    return@patch
+                }
                 val updated = userService.updateUserPersonalInfo(userId, request)
 
                 if (!updated) {
