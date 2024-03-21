@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 @RequiredArgsConstructor
 public class NewsToNewsDtoConverter implements Converter<News, NewsDto> {
@@ -25,8 +27,7 @@ public class NewsToNewsDtoConverter implements Converter<News, NewsDto> {
                 news.getDocuments().stream()
                         .map(documentToFileDtoConverter::convert)
                         .toList(),
-                news.getDate()
-                        .toString()
+                news.getDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yy"))
         );
     }
 }

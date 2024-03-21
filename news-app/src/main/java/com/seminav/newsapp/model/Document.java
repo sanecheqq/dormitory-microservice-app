@@ -20,6 +20,9 @@ public class Document {
     @Column(name = "url")
     String url;
 
+    @Column(name = "file_name")
+    String fileName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private News news;
 }

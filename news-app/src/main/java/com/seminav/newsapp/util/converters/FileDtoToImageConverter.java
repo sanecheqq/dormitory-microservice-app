@@ -11,6 +11,7 @@ public class FileDtoToImageConverter implements Converter<FileDto, Image> {
     public Image convert(FileDto fileDto) {
         Image image = new Image();
         image.setImageId(fileDto.fileId());
+        image.setImageName(fileDto.fileName());
         image.setUrl(fileDto.url());
         return image;
     }
