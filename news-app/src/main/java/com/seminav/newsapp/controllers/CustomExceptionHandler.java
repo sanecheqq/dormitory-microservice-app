@@ -39,6 +39,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             ConvertMultipartFileToByteArrayResourceException.class,
+            DeleteSavedNewsFromFollowersException.class
     })
     public ResponseEntity<Object> handleMultipartFileExceptions(Exception e) {
         return handleExceptionInternal(e, HttpStatus.CONFLICT);

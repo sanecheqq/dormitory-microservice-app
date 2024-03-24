@@ -32,7 +32,7 @@ public class AdminController {
             @PathVariable(name = "news_id") String newsId,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        externalUserService.deleteSavedNewsFromFollowers(newsId, authorizationHeader);
         newsService.deleteNews(newsId);
         return ResponseEntity.ok().build();
     }
