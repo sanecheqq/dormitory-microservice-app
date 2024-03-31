@@ -10,11 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface NewsService {
-    List<NewsDtoWithFavoriteField> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType, List<String> savedNewsIds);
+    List<NewsDtoWithFavoriteField> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType, List<String> savedNewsIds, String address);
 
     List<NewsDtoWithFavoriteField> getSavedNews(List<String> strings);
 
-    NewsDto createNews(CreateNewsRequest createNewsRequest);
+    NewsDto createNews(CreateNewsRequest createNewsRequest, String address);
 
     void deleteNews(String newsId);
 
