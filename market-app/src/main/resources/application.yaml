@@ -1,0 +1,26 @@
+server:
+  port: 8100
+  
+# For local testing
+POSTGRES_URL: jdbc:postgresql://localhost:5432/market
+POSTGRES_USER: postgres
+POSTGRES_PASSWORD: postgres
+
+# App Config
+spring:
+  application:
+    name: market-app
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 210MB
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+#      ddl-auto: update
+      ddl-auto:
+    generate-ddl: true
+    show-sql: true
