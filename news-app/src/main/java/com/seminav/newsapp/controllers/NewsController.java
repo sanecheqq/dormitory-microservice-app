@@ -26,7 +26,8 @@ public class NewsController {
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         var savedNewsIdsList = externalUserService.getUserSavedNews(authorizationHeader);
-        var news = newsService.getNews(newsCategory, searchPattern, sortType, savedNewsIdsList);
+        var userDto = externalUserService.getUserDto(authorizationHeader);
+        var news = newsService.getNews(newsCategory, searchPattern, sortType, savedNewsIdsList, userDto.address());
         return ResponseEntity.ok(new GetNewsResponse(news));
     }
 

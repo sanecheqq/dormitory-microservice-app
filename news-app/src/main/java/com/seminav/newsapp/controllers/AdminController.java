@@ -24,7 +24,8 @@ public class AdminController {
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
-        return ResponseEntity.ok(newsService.createNews(createNewsRequest));
+        var userDto = externalUserService.getUserDto(authorizationHeader);
+        return ResponseEntity.ok(newsService.createNews(createNewsRequest, userDto.address()));
     }
 
     @DeleteMapping("news/{news_id}")
