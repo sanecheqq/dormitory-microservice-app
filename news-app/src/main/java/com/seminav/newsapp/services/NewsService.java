@@ -1,7 +1,7 @@
 package com.seminav.newsapp.services;
 
-import com.seminav.newsapp.messages.CreateNewsRequest;
-import com.seminav.newsapp.messages.SortType;
+import com.seminav.newsapp.messages.requests.CreateNewsRequest;
+import com.seminav.newsapp.messages.responses.SortType;
 import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.messages.dtos.NewsDtoWithFavoriteField;
 import com.seminav.newsapp.model.NewsCategory;

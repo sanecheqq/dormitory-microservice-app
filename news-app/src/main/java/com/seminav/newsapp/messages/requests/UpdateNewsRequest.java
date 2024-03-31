@@ -1,4 +1,4 @@
-package com.seminav.newsapp.messages;
+package com.seminav.newsapp.messages.requests;
 
 import org.springframework.web.multipart.MultipartFile;
 

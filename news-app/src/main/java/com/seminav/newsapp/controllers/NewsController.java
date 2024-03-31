@@ -1,9 +1,9 @@
 package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.external.services.ExternalUserService;
-import com.seminav.newsapp.messages.GetNewsResponse;
-import com.seminav.newsapp.messages.GetSavedNewsResponse;
-import com.seminav.newsapp.messages.SortType;
+import com.seminav.newsapp.messages.responses.GetNewsResponse;
+import com.seminav.newsapp.messages.responses.GetSavedNewsResponse;
+import com.seminav.newsapp.messages.responses.SortType;
 import com.seminav.newsapp.model.NewsCategory;
 import com.seminav.newsapp.services.NewsService;
 import lombok.RequiredArgsConstructor;

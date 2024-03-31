@@ -2,8 +2,8 @@ package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.exceptions.NotEnoughRootsException;
 import com.seminav.newsapp.external.services.ExternalUserService;
-import com.seminav.newsapp.messages.CreateNewsRequest;
-import com.seminav.newsapp.messages.UpdateNewsRequest;
+import com.seminav.newsapp.messages.requests.CreateNewsRequest;
+import com.seminav.newsapp.messages.requests.UpdateNewsRequest;
 import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.services.NewsService;
 import jakarta.validation.Valid;

@@ -1,7 +1,7 @@
 package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.exceptions.*;
-import com.seminav.newsapp.messages.ExceptionResponse;
+import com.seminav.newsapp.messages.responses.ExceptionResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
