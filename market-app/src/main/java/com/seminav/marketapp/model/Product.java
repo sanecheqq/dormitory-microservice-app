@@ -41,7 +41,7 @@ public class Product {
     private String address;
 
     @Column(name = "approved")
-    private boolean approved;
+    private ProductStatus status;
 
     @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
