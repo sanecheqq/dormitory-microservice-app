@@ -1,9 +1,8 @@
-package com.seminav.newsapp.external.services;
+package com.seminav.marketapp.external.services;
 
-import com.seminav.newsapp.exceptions.DeleteSavedNewsFromFollowersException;
-import com.seminav.newsapp.external.messages.DeleteNewsFromFollowersRequest;
-import com.seminav.newsapp.external.messages.UserDto;
-import com.seminav.newsapp.util.HeaderRequestInterceptor;
+import com.seminav.marketapp.exceptions.DeleteSavedProductFromFollowersException;
+import com.seminav.marketapp.external.messages.DeleteProductFromFollowersRequest;
+import com.seminav.marketapp.util.HeaderRequestInterceptor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -32,22 +31,22 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
     }
 
     @Override
-    public void deleteSavedNewsFromFollowers(String newsId, String authHeader) {
+    public void deleteSavedProductsFromFollowers(String productId, String authHeader) {
         var storageInstance = getAvaliableServiceInstance("user-app");
-        URI deleteSavedNewsFromFollowersUri = storageInstance.getUri().resolve("/saved-news/followers");
+        URI deleteSavedNewsFromFollowersUri = storageInstance.getUri().resolve("/saved-products/followers"); // todo: check routing
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
-        HttpEntity<DeleteNewsFromFollowersRequest> request = new HttpEntity<>(new DeleteNewsFromFollowersRequest(newsId));
+        HttpEntity<DeleteProductFromFollowersRequest> request = new HttpEntity<>(new DeleteProductFromFollowersRequest(productId));
         ResponseEntity<String> response = restTemplate.exchange(deleteSavedNewsFromFollowersUri, HttpMethod.DELETE, request, String.class);
         if (response.getStatusCode().is4xxClientError()) {
-            throw new DeleteSavedNewsFromFollowersException("News " + newsId + " was not deleted from followers");
+            throw new DeleteSavedProductFromFollowersException("Product " + productId + " was not deleted from followers");
         } else {
-            System.out.println("News " + newsId + " was deleted!");
+            System.out.println("Product " + productId + " was deleted!");
         }
     }
 
-    public List<String> getUserSavedNews(String authHeader) {
+    public List<String> getUserSavedProducts(String authHeader) {
         var storageInstance = getAvaliableServiceInstance("user-app");
-        URI userUri = storageInstance.getUri().resolve("/saved-news");
+        URI userUri = storageInstance.getUri().resolve("/saved-products"); // todo: check routing
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
         String[] savedNewsIds = restTemplate.getForObject(userUri, String[].class);
         if (savedNewsIds == null || savedNewsIds.length == 0) {
@@ -58,12 +57,12 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
         }
     }
 
-    public UserDto getUserDto(String authHeader) {
-        var storageInstance = getAvaliableServiceInstance("user-app");
-        URI userUri = storageInstance.getUri().resolve("/user");
-        restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
-        return restTemplate.getForObject(userUri, UserDto.class);
-    }
+//    public UserDto getUserDto(String authHeader) {
+//        var storageInstance = getAvaliableServiceInstance("user-app");
+//        URI userUri = storageInstance.getUri().resolve("/user");
+//        restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
+//        return restTemplate.getForObject(userUri, UserDto.class);
+//    }
 
     private static List<ClientHttpRequestInterceptor> buildAuthHeaderInterceptorList(String authHeader) {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();

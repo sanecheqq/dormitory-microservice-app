@@ -1,9 +1,9 @@
 package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.external.services.ExternalUserService;
-import com.seminav.newsapp.messages.GetNewsResponse;
-import com.seminav.newsapp.messages.GetSavedNewsResponse;
-import com.seminav.newsapp.messages.SortType;
+import com.seminav.newsapp.messages.responses.GetNewsResponse;
+import com.seminav.newsapp.messages.responses.GetSavedNewsResponse;
+import com.seminav.newsapp.messages.responses.SortType;
 import com.seminav.newsapp.model.NewsCategory;
 import com.seminav.newsapp.services.NewsService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,8 @@ public class NewsController {
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         var savedNewsIdsList = externalUserService.getUserSavedNews(authorizationHeader);
-        var news = newsService.getNews(newsCategory, searchPattern, sortType, savedNewsIdsList);
+        var userDto = externalUserService.getUserDto(authorizationHeader);
+        var news = newsService.getNews(newsCategory, searchPattern, sortType, savedNewsIdsList, userDto.address());
         return ResponseEntity.ok(new GetNewsResponse(news));
     }
 

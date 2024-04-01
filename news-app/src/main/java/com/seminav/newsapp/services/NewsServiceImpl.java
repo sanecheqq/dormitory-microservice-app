@@ -3,8 +3,8 @@ package com.seminav.newsapp.services;
 import com.seminav.newsapp.exceptions.NewsNotFoundException;
 import com.seminav.newsapp.external.messages.FileDto;
 import com.seminav.newsapp.external.services.CloudStorageService;
-import com.seminav.newsapp.messages.CreateNewsRequest;
-import com.seminav.newsapp.messages.SortType;
+import com.seminav.newsapp.messages.requests.CreateNewsRequest;
+import com.seminav.newsapp.messages.responses.SortType;
 import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.messages.dtos.NewsDtoWithFavoriteField;
 import com.seminav.newsapp.model.Document;
@@ -41,9 +41,9 @@ public class NewsServiceImpl implements NewsService {
     private final ExecutorService sendingRequestsExecutor = Executors.newFixedThreadPool(15);
 
     @Override
-    public List<NewsDtoWithFavoriteField> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType, List<String> savedNewsIds) {
+    public List<NewsDtoWithFavoriteField> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType, List<String> savedNewsIds, String userAddress) {
         var sortOrder = sortType.equals(SortType.ASCENDING) ? Sort.Order.asc("date") : Sort.Order.desc("date");
-        List<News> news = newsRepo.getNewsByNewsCategoryAndSearchPatternAndSortByDate(newsCategory, searchPattern, Sort.by(sortOrder));
+        List<News> news = newsRepo.getNewsByNewsCategoryAndSearchPatternAndAddressAndSortByDate(newsCategory, searchPattern, userAddress, Sort.by(sortOrder));
 
         Set<String> savedNewsIdsSet = new HashSet<>(savedNewsIds);
         return convertNewsToNewsDtoWithFavoriteFieldList(news, savedNewsIdsSet);
@@ -76,7 +76,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public NewsDto createNews(CreateNewsRequest createNewsRequest) {
+    public NewsDto createNews(CreateNewsRequest createNewsRequest, String address) {
         List<MultipartFile> images = createNewsRequest.images();
         List<MultipartFile> documents = createNewsRequest.documents();
         CompletableFuture<List<FileDto>> uploadImagesFuture = uploadFilesAsync(images);
@@ -96,6 +96,7 @@ public class NewsServiceImpl implements NewsService {
         news.setCategory(NewsCategory.valueOf(createNewsRequest.category()));
         news.setContent(createNewsRequest.content());
         news.setDate(Timestamp.from(Instant.now()));
+        news.setAddress(address);
         news.addAllImages(imageFileDtos.stream()
                 .map(fileDtoToImageConverter::convert)
                 .toList()

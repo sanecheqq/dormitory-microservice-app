@@ -17,10 +17,12 @@ public interface NewsRepository extends JpaRepository<News, String> {
         SELECT n from News n
         WHERE (:news_category IS NULL OR n.category = :news_category)
             AND (:search_pattern = 'null' OR n.title LIKE '%'||:search_pattern||'%')
+            AND (n.address =:address)
     """)
-    List<News> getNewsByNewsCategoryAndSearchPatternAndSortByDate(
+    List<News> getNewsByNewsCategoryAndSearchPatternAndAddressAndSortByDate(
             @Param("news_category") NewsCategory category,
             @Param("search_pattern") String searchPattern,
+            @Param("address") String address,
             Sort sort
     );
 }

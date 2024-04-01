@@ -1,7 +1,7 @@
-package com.seminav.newsapp.controllers;
+package com.seminav.marketapp.controllers;
 
-import com.seminav.newsapp.exceptions.*;
-import com.seminav.newsapp.messages.responses.ExceptionResponse;
+import com.seminav.marketapp.exceptions.*;
+import com.seminav.marketapp.messages.ExceptionResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 
 @ControllerAdvice
@@ -39,7 +40,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             ConvertMultipartFileToByteArrayResourceException.class,
-            DeleteSavedNewsFromFollowersException.class
+            DeleteSavedProductFromFollowersException.class
     })
     public ResponseEntity<Object> handleMultipartFileExceptions(Exception e) {
         return handleExceptionInternal(e, HttpStatus.CONFLICT);
@@ -47,7 +48,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             InstanceNotFoundException.class,
-            NewsNotFoundException.class
+            NoSuchElementException.class
     })
     public ResponseEntity<Object> handleNotFoundException(Exception e) {
         return handleExceptionInternal(e, HttpStatus.NOT_FOUND);
@@ -65,6 +66,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         StringJoiner joiner = new StringJoiner(",");
         e.getConstraintViolations().stream().map(c -> c.getPropertyPath().toString()).forEach(joiner::add);
         return handleExceptionInternal(new RuntimeException(joiner.toString(), e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(ConstraintViolationException e) {
+        return handleExceptionInternal(e, HttpStatus.BAD_REQUEST);
     }
 
     @Override

@@ -41,6 +41,9 @@ public class News {
     @Column(name = "date")
     private Timestamp date;
 
+    @Column(name = "address")
+    private String address;
+
     public void addAllImages(List<Image> images) {
         for (Image image : images) {
             this.images.add(image);

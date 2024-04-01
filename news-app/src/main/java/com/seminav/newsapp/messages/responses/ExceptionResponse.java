@@ -1,4 +1,4 @@
-package com.seminav.newsapp.messages;
+package com.seminav.newsapp.messages.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -2,8 +2,8 @@ package com.seminav.newsapp.controllers;
 
 import com.seminav.newsapp.exceptions.NotEnoughRootsException;
 import com.seminav.newsapp.external.services.ExternalUserService;
-import com.seminav.newsapp.messages.CreateNewsRequest;
-import com.seminav.newsapp.messages.UpdateNewsRequest;
+import com.seminav.newsapp.messages.requests.CreateNewsRequest;
+import com.seminav.newsapp.messages.requests.UpdateNewsRequest;
 import com.seminav.newsapp.messages.dtos.NewsDto;
 import com.seminav.newsapp.services.NewsService;
 import jakarta.validation.Valid;
@@ -24,7 +24,8 @@ public class AdminController {
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
-        return ResponseEntity.ok(newsService.createNews(createNewsRequest));
+        var userDto = externalUserService.getUserDto(authorizationHeader);
+        return ResponseEntity.ok(newsService.createNews(createNewsRequest, userDto.address()));
     }
 
     @DeleteMapping("news/{news_id}")
@@ -32,7 +33,7 @@ public class AdminController {
             @PathVariable(name = "news_id") String newsId,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        externalUserService.deleteSavedNewsFromFollowers(newsId, authorizationHeader);
         newsService.deleteNews(newsId);
         return ResponseEntity.ok().build();
     }
