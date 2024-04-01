@@ -79,6 +79,10 @@ fun Route.authRoutes(
                 TokenClaim(
                     name = "userRole",
                     value = userDTO.role
+                ),
+                TokenClaim(
+                    name = "userAddress",
+                    value = userDTO.address
                 )
             )
 
