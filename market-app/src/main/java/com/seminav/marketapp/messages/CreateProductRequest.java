@@ -16,5 +16,6 @@ public record CreateProductRequest(
     @NotBlank
     double price,
     @NotEmpty
-    List<MultipartFile> images
+    List<MultipartFile> images,
+    String address
 ) {}
