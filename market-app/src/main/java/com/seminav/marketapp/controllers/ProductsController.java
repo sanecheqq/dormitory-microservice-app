@@ -25,4 +25,24 @@ public class ProductsController {
         ProductDto product = productService.createProduct(createProductRequest);
         return ResponseEntity.ok(product);
     }
+
+    @PatchMapping("/sold/{id}")
+    public ResponseEntity<?> archiveProduct(
+            @PathVariable String id,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
+        productService.archiveProduct(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(
+            @PathVariable String id,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
+    }
 }

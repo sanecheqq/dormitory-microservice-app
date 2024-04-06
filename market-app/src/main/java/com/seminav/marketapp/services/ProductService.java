@@ -11,4 +11,8 @@ public interface ProductService {
     void changeProductStatus(String productId, String status);
 
     GetProductsForValidationResponse getProductsForValidation();
+
+    void archiveProduct(String id);
+
+    void deleteProduct(String id);
 }

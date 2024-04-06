@@ -77,6 +77,18 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    @Override
+    public void archiveProduct(String id) {
+        Product product = getProductById(id);
+        product.setStatus(ProductStatus.ARCHIVED);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(String id) {
+        productRepository.deleteById(id);
+    }
+
     private Product getProductById(String productId) {
         return productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
     }
