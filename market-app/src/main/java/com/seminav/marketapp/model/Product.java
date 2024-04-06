@@ -26,6 +26,7 @@ public class Product {
     private String name;
 
     @Column(name = "category")
+    @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
     @Column(name = "description")
@@ -41,9 +42,10 @@ public class Product {
     private String address;
 
     @Column(name = "approved")
+    @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     public void addAllImages(List<Image> images) {

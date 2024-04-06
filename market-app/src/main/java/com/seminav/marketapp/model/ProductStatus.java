@@ -1,7 +1,8 @@
 package com.seminav.marketapp.model;
 
 public enum ProductStatus {
-    VALIDATED,
+    VALIDATING,
     REJECTED,
-    PUBLISHED
+    PUBLISHED,
+    ARCHIVED
 }

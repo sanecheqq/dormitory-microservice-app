@@ -13,8 +13,7 @@ public record CreateProductRequest(
     String category,
     @NotBlank
     String description,
-    @NotBlank
-    double price,
+    Double price,
     @NotEmpty
     List<MultipartFile> images,
     String address

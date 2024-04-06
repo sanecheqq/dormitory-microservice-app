@@ -3,6 +3,7 @@ package com.seminav.marketapp.services;
 import com.seminav.marketapp.external.messages.FileDto;
 import com.seminav.marketapp.external.services.CloudStorageService;
 import com.seminav.marketapp.messages.CreateProductRequest;
+import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
 import com.seminav.marketapp.model.Product;
 import com.seminav.marketapp.model.ProductCategory;
@@ -52,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(createProductRequest.price());
         product.setDate(Timestamp.from(Instant.now()));
         product.setAddress(createProductRequest.address());
-        product.setStatus(ProductStatus.VALIDATED);
+        product.setStatus(ProductStatus.VALIDATING);
         product.addAllImages(imageFileDtos.stream()
                 .map(fileDtoToImageConverter::convert)
                 .toList()
@@ -65,6 +66,15 @@ public class ProductServiceImpl implements ProductService {
         Product product = getProductById(productId);
         product.setStatus(ProductStatus.valueOf(status));
         productRepository.save(product);
+    }
+
+    @Override
+    public GetProductsForValidationResponse getProductsForValidation() {
+        List<Product> productsForValidation = productRepository.findAllByStatus(ProductStatus.VALIDATING);
+        return new GetProductsForValidationResponse(productsForValidation.stream()
+                .map(productToProductDtoConverter::convert)
+                .toList()
+        );
     }
 
     private Product getProductById(String productId) {
