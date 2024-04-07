@@ -2,6 +2,7 @@ package com.seminav.newsapp.external.services;
 
 import com.seminav.newsapp.exceptions.DeleteSavedNewsFromFollowersException;
 import com.seminav.newsapp.external.messages.DeleteNewsFromFollowersRequest;
+import com.seminav.newsapp.external.messages.GetUserResponse;
 import com.seminav.newsapp.external.messages.UserDto;
 import com.seminav.newsapp.util.HeaderRequestInterceptor;
 import org.springframework.http.HttpEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ExternalUserServiceImpl extends DiscoveryClientService implements ExternalUserService {
@@ -62,7 +64,7 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
         var storageInstance = getAvaliableServiceInstance("user-app");
         URI userUri = storageInstance.getUri().resolve("/user");
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
-        return restTemplate.getForObject(userUri, UserDto.class);
+        return Objects.requireNonNull(restTemplate.getForObject(userUri, GetUserResponse.class)).userDTO();
     }
 
     private static List<ClientHttpRequestInterceptor> buildAuthHeaderInterceptorList(String authHeader) {
