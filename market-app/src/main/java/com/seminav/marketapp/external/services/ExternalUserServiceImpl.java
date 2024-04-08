@@ -2,6 +2,8 @@ package com.seminav.marketapp.external.services;
 
 import com.seminav.marketapp.exceptions.DeleteSavedProductFromFollowersException;
 import com.seminav.marketapp.external.messages.DeleteProductFromFollowersRequest;
+import com.seminav.marketapp.external.messages.GetUserResponse;
+import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.util.HeaderRequestInterceptor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -13,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ExternalUserServiceImpl extends DiscoveryClientService implements ExternalUserService {
@@ -57,12 +60,12 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
         }
     }
 
-//    public UserDto getUserDto(String authHeader) {
-//        var storageInstance = getAvaliableServiceInstance("user-app");
-//        URI userUri = storageInstance.getUri().resolve("/user");
-//        restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
-//        return restTemplate.getForObject(userUri, UserDto.class);
-//    }
+    public UserDto getUserDto(String authHeader) {
+        var storageInstance = getAvaliableServiceInstance("user-app");
+        URI userUri = storageInstance.getUri().resolve("/user");
+        restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
+        return Objects.requireNonNull(restTemplate.getForObject(userUri, GetUserResponse.class)).userDTO();
+    }
 
     private static List<ClientHttpRequestInterceptor> buildAuthHeaderInterceptorList(String authHeader) {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();

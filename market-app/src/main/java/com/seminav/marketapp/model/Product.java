@@ -51,6 +51,9 @@ public class Product {
     @Column(name = "address")
     private String address;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     @KeywordField

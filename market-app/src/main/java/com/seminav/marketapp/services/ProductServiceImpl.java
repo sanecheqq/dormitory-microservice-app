@@ -1,15 +1,13 @@
 package com.seminav.marketapp.services;
 
 import com.seminav.marketapp.external.messages.FileDto;
+import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.external.services.CloudStorageService;
 import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
-import com.seminav.marketapp.model.Image;
-import com.seminav.marketapp.model.Product;
-import com.seminav.marketapp.model.ProductCategory;
-import com.seminav.marketapp.model.ProductStatus;
+import com.seminav.marketapp.model.*;
 import com.seminav.marketapp.repositories.ProductRepository;
 import com.seminav.marketapp.util.converters.FileDtoToImageConverter;
 import com.seminav.marketapp.util.converters.ProductToProductDtoConverter;
@@ -36,10 +34,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProductToProductDtoConverter productToProductDtoConverter;
     private final FileDtoToImageConverter fileDtoToImageConverter;
     private final HibernateSearchService hibernateSearchService;
+    private final UserService userService;
     private final ExecutorService sendingRequestsExecutor = Executors.newFixedThreadPool(15);
 
     @Override
-    public ProductDto createProduct(CreateProductRequest createProductRequest) {
+    public ProductDto createProduct(CreateProductRequest createProductRequest, UserDto userDto) {
         List<MultipartFile> images = createProductRequest.images();
         CompletableFuture<List<FileDto>> uploadImagesFuture = uploadFilesAsync(images);
 
@@ -49,6 +48,8 @@ public class ProductServiceImpl implements ProductService {
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
         }
+
+        User user = userService.getUserOrElseSave(userDto.id());
 
         Product product = new Product();
         product.setProductName(createProductRequest.name());
@@ -62,7 +63,12 @@ public class ProductServiceImpl implements ProductService {
                 .map(fileDtoToImageConverter::convert)
                 .toList()
         );
-        return productToProductDtoConverter.convert(productRepository.save(product));
+        product.setUser(user);
+        product = productRepository.save(product);
+        user.addProduct(product);
+        userService.save(user);
+
+        return productToProductDtoConverter.convert(product);
     }
 
     @Override

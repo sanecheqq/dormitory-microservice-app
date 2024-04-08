@@ -1,5 +1,6 @@
 package com.seminav.marketapp.services;
 
+import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
@@ -8,7 +9,7 @@ import com.seminav.marketapp.model.ProductCategory;
 
 public interface ProductService {
 
-    ProductDto createProduct(CreateProductRequest createProductRequest);
+    ProductDto createProduct(CreateProductRequest createProductRequest, UserDto userDto);
 
     void changeProductStatus(String productId, String status);
 

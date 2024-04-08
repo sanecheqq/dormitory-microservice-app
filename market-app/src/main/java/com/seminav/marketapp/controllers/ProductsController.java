@@ -1,11 +1,13 @@
 package com.seminav.marketapp.controllers;
 
+import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.external.services.ExternalUserService;
 import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
 import com.seminav.marketapp.model.ProductCategory;
 import com.seminav.marketapp.services.ProductService;
+import com.seminav.marketapp.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProductsController {
     private final ProductService productService;
+    private final UserService userService;
     private final ExternalUserService externalUserService;
 
     @PostMapping
@@ -23,8 +26,8 @@ public class ProductsController {
             @ModelAttribute @Valid CreateProductRequest createProductRequest,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
-        ProductDto product = productService.createProduct(createProductRequest);
+        UserDto userDto = externalUserService.getUserDto(authorizationHeader);
+        ProductDto product = productService.createProduct(createProductRequest, userDto);
         return ResponseEntity.ok(product);
     }
 
@@ -67,5 +70,13 @@ public class ProductsController {
     ) {
         externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
         return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern));
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<GetProductsResponse> getMyProducts(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        UserDto userDto = externalUserService.getUserDto(authorizationHeader);
+        return ResponseEntity.ok(userService.getProducts(userDto.id()));
     }
 }
