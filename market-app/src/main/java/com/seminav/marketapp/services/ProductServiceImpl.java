@@ -6,6 +6,7 @@ import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
+import com.seminav.marketapp.model.Image;
 import com.seminav.marketapp.model.Product;
 import com.seminav.marketapp.model.ProductCategory;
 import com.seminav.marketapp.model.ProductStatus;
@@ -89,7 +90,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(String id) {
-        //todo: удаление - посылать запрос в storage на удаление фото
+        List<String> imageIds = findByIdOrElseThrow(id).getImages().stream().map(Image::getImageId).toList();
+        cloudStorageService.deleteFiles(imageIds);
         productRepository.deleteById(id);
     }
 
