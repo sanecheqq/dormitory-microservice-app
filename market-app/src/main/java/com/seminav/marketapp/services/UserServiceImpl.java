@@ -1,7 +1,7 @@
 package com.seminav.marketapp.services;
 
 import com.seminav.marketapp.exceptions.UserNotFoundException;
-import com.seminav.marketapp.messages.GetProductsResponse;
+import com.seminav.marketapp.messages.GetMyProductsResponse;
 import com.seminav.marketapp.model.User;
 import com.seminav.marketapp.repositories.UserRepository;
 import com.seminav.marketapp.util.converters.ProductToProductDtoConverter;
@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetProductsResponse getProducts(String userId) {
-        return new GetProductsResponse(
+    public GetMyProductsResponse getProducts(String userId) {
+        return new GetMyProductsResponse(
                 userRepository.findById(userId)
                         .orElseThrow(() -> new UserNotFoundException(userId))
                         .getProducts().stream()

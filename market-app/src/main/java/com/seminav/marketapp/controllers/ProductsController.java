@@ -3,6 +3,7 @@ package com.seminav.marketapp.controllers;
 import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.external.services.ExternalUserService;
 import com.seminav.marketapp.messages.CreateProductRequest;
+import com.seminav.marketapp.messages.GetMyProductsResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
 import com.seminav.marketapp.model.ProductCategory;
@@ -12,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -68,12 +71,12 @@ public class ProductsController {
             @RequestParam(value = "max_price", defaultValue = ""+1e7) Double maxPrice,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
+        List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);//todo: впихать savedProducts, когда на юзере будет ручка
         return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern));
     }
-
+    //todo сделать получение избранных продуктов
     @GetMapping("/my")
-    public ResponseEntity<GetProductsResponse> getMyProducts(
+    public ResponseEntity<GetMyProductsResponse> getMyProducts(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         UserDto userDto = externalUserService.getUserDto(authorizationHeader);

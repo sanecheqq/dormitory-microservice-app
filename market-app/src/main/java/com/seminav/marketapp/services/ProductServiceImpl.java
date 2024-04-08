@@ -7,9 +7,11 @@ import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
+import com.seminav.marketapp.messages.dtos.ProductDtoWithFavoriteField;
 import com.seminav.marketapp.model.*;
 import com.seminav.marketapp.repositories.ProductRepository;
 import com.seminav.marketapp.util.converters.FileDtoToImageConverter;
+import com.seminav.marketapp.util.converters.ImageToFileDtoConverter;
 import com.seminav.marketapp.util.converters.ProductToProductDtoConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CloudStorageService cloudStorageService;
     private final ProductToProductDtoConverter productToProductDtoConverter;
+    private final ImageToFileDtoConverter imageToFileDtoConverter;
     private final FileDtoToImageConverter fileDtoToImageConverter;
     private final HibernateSearchService hibernateSearchService;
     private final UserService userService;
@@ -113,11 +115,28 @@ public class ProductServiceImpl implements ProductService {
         } else {
             result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice);
         }
+        Set<String> savedProductIds = new HashSet<>(); // todo: будет запрос на получение избранных как с новостями для проверки
         return new GetProductsResponse(
-                result.stream()
-                        .map(productToProductDtoConverter::convert)
-                        .toList()
+                convertProductsToProductDtoWithFavoriteFieldList(result, savedProductIds)
         );
+    }
+
+    private List<ProductDtoWithFavoriteField> convertProductsToProductDtoWithFavoriteFieldList(List<Product> products, Set<String> savedProductsIds) {
+        List<ProductDtoWithFavoriteField> res = new ArrayList<>();
+        for (var product : products) {
+            res.add(new ProductDtoWithFavoriteField(
+                    product.getProductId(),
+                    product.getProductName(),
+                    product.getCategory().toString(),
+                    product.getDescription(),
+                    product.getPrice().doubleValue(),
+                    product.getDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yy")),
+                    product.getAddress(),
+                    product.getImages().stream().map(imageToFileDtoConverter::convert).toList(),
+                    savedProductsIds.contains(product.getProductId())
+            ));
+        }
+        return res;
     }
 
     @Override
