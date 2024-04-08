@@ -48,6 +48,15 @@ public class ProductsController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(
+            @PathVariable("id") String productId,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
+        return ResponseEntity.ok(productService.getProductById(productId));
+    }
+
     @GetMapping()
     public ResponseEntity<GetProductsResponse> getProducts(
             @RequestParam(value = "search_pattern", required = false) String searchPattern,

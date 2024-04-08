@@ -19,4 +19,6 @@ public interface ProductService {
     void deleteProduct(String id);
 
     GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern);
+
+    ProductDto getProductById(String productId);
 }

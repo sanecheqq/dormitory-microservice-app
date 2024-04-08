@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void changeProductStatus(String productId, String status) {
-        Product product = getProductById(productId);
+        Product product = findByIdOrElseThrow(productId);
         product.setStatus(ProductStatus.valueOf(status));
         productRepository.save(product);
     }
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void archiveProduct(String id) {
-        Product product = getProductById(id);
+        Product product = findByIdOrElseThrow(id);
         product.setStatus(ProductStatus.ARCHIVED);
         productRepository.save(product);
     }
@@ -112,7 +112,12 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
-    private Product getProductById(String productId) {
+    @Override
+    public ProductDto getProductById(String productId) {
+        return productToProductDtoConverter.convert(findByIdOrElseThrow(productId));
+    }
+
+    private Product findByIdOrElseThrow(String productId) {
         return productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
     }
 
