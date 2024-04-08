@@ -36,7 +36,7 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
     @Override
     public void deleteSavedProductsFromFollowers(String productId, String authHeader) {
         var storageInstance = getAvaliableServiceInstance("user-app");
-        URI deleteSavedNewsFromFollowersUri = storageInstance.getUri().resolve("/saved-products/followers"); // todo: check routing
+        URI deleteSavedNewsFromFollowersUri = storageInstance.getUri().resolve("/saved-products/followers"); // todo: ждем ручки на юзере
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
         HttpEntity<DeleteProductFromFollowersRequest> request = new HttpEntity<>(new DeleteProductFromFollowersRequest(productId));
         ResponseEntity<String> response = restTemplate.exchange(deleteSavedNewsFromFollowersUri, HttpMethod.DELETE, request, String.class);
@@ -49,7 +49,7 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
 
     public List<String> getUserSavedProducts(String authHeader) {
         var storageInstance = getAvaliableServiceInstance("user-app");
-        URI userUri = storageInstance.getUri().resolve("/saved-products"); // todo: check routing
+        URI userUri = storageInstance.getUri().resolve("/saved-products"); // todo: ждем ручки на юзере
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
         String[] savedNewsIds = restTemplate.getForObject(userUri, String[].class);
         if (savedNewsIds == null || savedNewsIds.length == 0) {
