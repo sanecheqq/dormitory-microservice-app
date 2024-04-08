@@ -5,7 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.ScaledNumberField;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
+@Indexed
 @Table(name = "products")
 public class Product {
     @Id
@@ -23,16 +29,21 @@ public class Product {
     private String productId;
 
     @Column(name = "product_name")
-    private String name;
+    @FullTextField
+    private String productName;
 
     @Column(name = "category")
+    @Enumerated(EnumType.STRING)
+    @KeywordField
     private ProductCategory category;
 
     @Column(name = "description")
+    @FullTextField
     private String description;
 
     @Column(name = "price")
-    private double price;
+    @ScaledNumberField
+    private BigDecimal price;
 
     @Column(name = "date")
     private Timestamp date;
@@ -40,10 +51,15 @@ public class Product {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "approved")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    @KeywordField
     private ProductStatus status;
 
-    @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     public void addAllImages(List<Image> images) {

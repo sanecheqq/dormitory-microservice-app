@@ -2,6 +2,7 @@ package com.seminav.marketapp.controllers;
 
 import com.seminav.marketapp.exceptions.NotEnoughRootsException;
 import com.seminav.marketapp.external.services.ExternalUserService;
+import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ public class AdminController {
         checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
         productService.changeProductStatus(productId, status);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/validation")
+    public ResponseEntity<GetProductsForValidationResponse> getProductsForValidation(@RequestHeader("Authorization") String authorizationHeader) {
+        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        return ResponseEntity.ok(productService.getProductsForValidation());
     }
 
     private void checkRoleOrElseThrow(String userRole) {

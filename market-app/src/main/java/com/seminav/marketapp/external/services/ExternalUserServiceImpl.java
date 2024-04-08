@@ -2,6 +2,8 @@ package com.seminav.marketapp.external.services;
 
 import com.seminav.marketapp.exceptions.DeleteSavedProductFromFollowersException;
 import com.seminav.marketapp.external.messages.DeleteProductFromFollowersRequest;
+import com.seminav.marketapp.external.messages.GetUserResponse;
+import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.util.HeaderRequestInterceptor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -13,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ExternalUserServiceImpl extends DiscoveryClientService implements ExternalUserService {
@@ -33,7 +36,7 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
     @Override
     public void deleteSavedProductsFromFollowers(String productId, String authHeader) {
         var storageInstance = getAvaliableServiceInstance("user-app");
-        URI deleteSavedNewsFromFollowersUri = storageInstance.getUri().resolve("/saved-products/followers"); // todo: check routing
+        URI deleteSavedNewsFromFollowersUri = storageInstance.getUri().resolve("/saved-products/followers"); // todo: ждем ручки на юзере
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
         HttpEntity<DeleteProductFromFollowersRequest> request = new HttpEntity<>(new DeleteProductFromFollowersRequest(productId));
         ResponseEntity<String> response = restTemplate.exchange(deleteSavedNewsFromFollowersUri, HttpMethod.DELETE, request, String.class);
@@ -46,7 +49,7 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
 
     public List<String> getUserSavedProducts(String authHeader) {
         var storageInstance = getAvaliableServiceInstance("user-app");
-        URI userUri = storageInstance.getUri().resolve("/saved-products"); // todo: check routing
+        URI userUri = storageInstance.getUri().resolve("/saved-products"); // todo: ждем ручки на юзере
         restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
         String[] savedNewsIds = restTemplate.getForObject(userUri, String[].class);
         if (savedNewsIds == null || savedNewsIds.length == 0) {
@@ -57,12 +60,12 @@ public class ExternalUserServiceImpl extends DiscoveryClientService implements E
         }
     }
 
-//    public UserDto getUserDto(String authHeader) {
-//        var storageInstance = getAvaliableServiceInstance("user-app");
-//        URI userUri = storageInstance.getUri().resolve("/user");
-//        restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
-//        return restTemplate.getForObject(userUri, UserDto.class);
-//    }
+    public UserDto getUserDto(String authHeader) {
+        var storageInstance = getAvaliableServiceInstance("user-app");
+        URI userUri = storageInstance.getUri().resolve("/user");
+        restTemplate.setInterceptors(buildAuthHeaderInterceptorList(authHeader));
+        return Objects.requireNonNull(restTemplate.getForObject(userUri, GetUserResponse.class)).userDTO();
+    }
 
     private static List<ClientHttpRequestInterceptor> buildAuthHeaderInterceptorList(String authHeader) {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();

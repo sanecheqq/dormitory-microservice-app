@@ -48,6 +48,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             InstanceNotFoundException.class,
+            UserNotFoundException.class,
             NoSuchElementException.class
     })
     public ResponseEntity<Object> handleNotFoundException(Exception e) {

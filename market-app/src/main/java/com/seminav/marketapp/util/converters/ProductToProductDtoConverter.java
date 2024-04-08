@@ -16,11 +16,11 @@ public class ProductToProductDtoConverter implements Converter<Product, ProductD
     public ProductDto convert(Product product) {
         return new ProductDto(
                 product.getProductId(),
-                product.getName(),
+                product.getProductName(),
                 product.getCategory()
                         .toString(),
                 product.getDescription(),
-                product.getPrice(),
+                product.getPrice().doubleValue(),
                 product.getDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yy")),
                 product.getAddress(),
                 product.getImages().stream()

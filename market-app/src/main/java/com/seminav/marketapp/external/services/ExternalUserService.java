@@ -1,6 +1,8 @@
 package com.seminav.marketapp.external.services;
 
 
+import com.seminav.marketapp.external.messages.UserDto;
+
 import java.util.List;
 
 public interface ExternalUserService {
@@ -8,7 +10,7 @@ public interface ExternalUserService {
 
     List<String> getUserSavedProducts(String authHeader);
 
-//    UserDto getUserDto(String authHeader);
+    UserDto getUserDto(String authHeader);
 
     void deleteSavedProductsFromFollowers(String newsId, String authHeader);
 }
