@@ -49,6 +49,7 @@ fun Route.userRoutes(
                     return@get
                 }
                 val newUserDTO = UserDTO(
+                    id = userDTO.id,
                     name = userDTO.name,
                     surname = userDTO.surname,
                     patronymic = userDTO.patronymic,

@@ -85,7 +85,7 @@ class UserRepositoryImpl : UserRepository {
                 user?.address = DormitoryAddress.find { DormitoryAddressesTable.address eq request.address }.singleOrNull()!!
 
                 val fluroCertDTO = request.fluroCert
-                val stdsCertDTO = request.fluroCert
+                val stdsCertDTO = request.stdsCert
                 val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
                 if (fluroCertDTO != null) {
                     FluoroCertificate.find { FluoroCertificatesTable.userId eq id }.singleOrNull()?.delete()
