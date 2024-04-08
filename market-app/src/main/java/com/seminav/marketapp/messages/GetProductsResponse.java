@@ -1,9 +1,9 @@
 package com.seminav.marketapp.messages;
 
-import com.seminav.marketapp.messages.dtos.ProductDtoWithFavoriteField;
+import com.seminav.marketapp.messages.dtos.ProductDto;
 
 import java.util.List;
 
 public record GetProductsResponse(
-        List<ProductDtoWithFavoriteField> products
+        List<ProductDto> products // todo: пока тесчу - ProductDto, потом - ProductDtoWithFavoriteField
 ) {}

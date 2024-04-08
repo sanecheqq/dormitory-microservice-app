@@ -2,7 +2,9 @@ package com.seminav.marketapp.controllers;
 
 import com.seminav.marketapp.external.services.ExternalUserService;
 import com.seminav.marketapp.messages.CreateProductRequest;
+import com.seminav.marketapp.messages.GetProductsResponse;
 import com.seminav.marketapp.messages.dtos.ProductDto;
+import com.seminav.marketapp.model.ProductCategory;
 import com.seminav.marketapp.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,17 @@ public class ProductsController {
         externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
         productService.deleteProduct(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<GetProductsResponse> getProducts(
+            @RequestParam(value = "search_pattern", required = false) String searchPattern,
+            @RequestParam(value = "category", required = false) ProductCategory category,
+            @RequestParam(value = "min_price", defaultValue = "0") Double minPrice,
+            @RequestParam(value = "max_price", defaultValue = ""+1e7) Double maxPrice,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
+        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern));
     }
 }
