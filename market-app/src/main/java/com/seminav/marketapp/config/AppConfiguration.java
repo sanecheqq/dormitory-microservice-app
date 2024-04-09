@@ -16,7 +16,7 @@ public class AppConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/news/**")
+        registry.addMapping("/products/**")
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT");
         registry.addMapping("/admin/**")

@@ -19,7 +19,7 @@ public interface ProductService {
 
     void deleteProduct(String id);
 
-    GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern);
+    GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page);
 
     ProductDto getProductById(String productId);
 }

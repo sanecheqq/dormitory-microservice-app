@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
             System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
         }
 
-        User user = userService.getUserOrElseSave(userDto.id());
+        User user = userService.getUserOrElseSave(userDto);
 
         Product product = new Product();
         product.setProductName(createProductRequest.name());
@@ -104,16 +104,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern) {
+    public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page) {
         List<Product> result;
         if (category == null && searchPattern == null) {
-            result  = hibernateSearchService.searchForProducts(minPrice, maxPrice);
+            System.out.println("оба нулл");
+            result  = hibernateSearchService.searchForProducts(minPrice, maxPrice, page);
         } else if (category == null) {
-            result  = hibernateSearchService.searchForProducts(searchPattern, minPrice, maxPrice);
+            result  = hibernateSearchService.searchForProducts(searchPattern, minPrice, maxPrice, page);
         } else if (searchPattern == null) {
-            result  = hibernateSearchService.searchForProducts(category, minPrice, maxPrice);
+            result  = hibernateSearchService.searchForProducts(category, minPrice, maxPrice, page);
         } else {
-            result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice);
+            result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice, page);
         }
         Set<String> savedProductIds = new HashSet<>(); // todo: будет запрос на получение избранных как с новостями для проверки
         return new GetProductsResponse(
@@ -132,6 +133,7 @@ public class ProductServiceImpl implements ProductService {
                     product.getPrice().doubleValue(),
                     product.getDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yy")),
                     product.getAddress(),
+                    product.getUser().getTgUsername(),
                     product.getImages().stream().map(imageToFileDtoConverter::convert).toList(),
                     savedProductsIds.contains(product.getProductId())
             ));

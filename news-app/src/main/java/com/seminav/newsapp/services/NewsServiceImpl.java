@@ -42,6 +42,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public List<NewsDtoWithFavoriteField> getNews(NewsCategory newsCategory, String searchPattern, SortType sortType, List<String> savedNewsIds, String userAddress) {
+        if (searchPattern == null)
+            searchPattern = "null";
         var sortOrder = sortType.equals(SortType.ASCENDING) ? Sort.Order.asc("date") : Sort.Order.desc("date");
         List<News> news = newsRepo.getNewsByNewsCategoryAndSearchPatternAndAddressAndSortByDate(newsCategory, searchPattern, userAddress, Sort.by(sortOrder));
 

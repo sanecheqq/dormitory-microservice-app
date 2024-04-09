@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -65,14 +63,16 @@ public class ProductsController {
 
     @GetMapping()
     public ResponseEntity<GetProductsResponse> getProducts(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "search_pattern", required = false) String searchPattern,
             @RequestParam(value = "category", required = false) ProductCategory category,
             @RequestParam(value = "min_price", defaultValue = "0") Double minPrice,
             @RequestParam(value = "max_price", defaultValue = ""+1e7) Double maxPrice,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-        List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);//todo: впихать savedProducts, когда на юзере будет ручка
-        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern));
+//        List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);//todo: впихать savedProducts, когда на юзере будет ручка
+        var skip = externalUserService.getUserDto(authorizationHeader);//todo: впихать savedProducts, когда на юзере будет ручка
+        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern, page));
     }
     //todo сделать получение избранных продуктов
     @GetMapping("/my")

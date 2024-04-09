@@ -23,6 +23,8 @@ public class ProductToProductDtoConverter implements Converter<Product, ProductD
                 product.getPrice().doubleValue(),
                 product.getDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yy")),
                 product.getAddress(),
+                product.getUser().getTgUsername(),
+                product.getStatus().getStatusName(),
                 product.getImages().stream()
                         .map(imageToFileDtoConverter::convert)
                         .toList()

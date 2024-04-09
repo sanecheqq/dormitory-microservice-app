@@ -12,5 +12,7 @@ public record ProductDto(
         double price,
         String date,
         String address,
+        String tgUsername,
+        String status,
         List<FileDto> images
 ) {}

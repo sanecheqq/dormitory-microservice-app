@@ -12,6 +12,7 @@ public record ProductDtoWithFavoriteField(
         double price,
         String date,
         String address,
+        String tgUsername,
         List<FileDto> images,
         Boolean favorite
 ) {}

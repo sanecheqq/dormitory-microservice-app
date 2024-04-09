@@ -1,6 +1,7 @@
 package com.seminav.marketapp.services;
 
 import com.seminav.marketapp.exceptions.UserNotFoundException;
+import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.messages.GetMyProductsResponse;
 import com.seminav.marketapp.model.User;
 import com.seminav.marketapp.repositories.UserRepository;
@@ -16,11 +17,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ProductToProductDtoConverter productToProductDtoConverter;
     @Override
-    public User getUserOrElseSave(String userId) {
-        Optional<User> user = userRepository.findById(userId);
+    public User getUserOrElseSave(UserDto userDto) {
+        Optional<User> user = userRepository.findById(userDto.id());
         if (user.isEmpty()) {
             User newUser = new User();
-            newUser.setUserId(userId);
+            newUser.setUserId(userDto.id());
+            newUser.setTgUsername(userDto.tgUsername());
             return userRepository.save(newUser);
         }
         return user.get();

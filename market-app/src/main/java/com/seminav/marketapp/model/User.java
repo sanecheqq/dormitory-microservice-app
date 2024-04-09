@@ -17,6 +17,9 @@ public class User {
     @Id
     private String userId;
 
+    @Column(name = "tg_username")
+    private String tgUsername;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
