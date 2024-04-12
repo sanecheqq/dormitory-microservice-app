@@ -51,7 +51,7 @@ public class CloudStorageServiceImpl extends DiscoveryClientService implements C
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         var uploadResponseEntity = restTemplate.postForEntity(uploadFilesUri, requestEntity, UploadFilesResponse.class);
         if (uploadResponseEntity.getStatusCode().isError() || uploadResponseEntity.getBody() == null) {
-            throw new UploadFilesException("Uploading files failed");
+            throw new UploadFilesException("Uploading files failed " + uploadResponseEntity.getBody());
         }
         return uploadResponseEntity.getBody().fileDtos();
     }
