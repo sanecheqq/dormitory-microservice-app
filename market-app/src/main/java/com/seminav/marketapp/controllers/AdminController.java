@@ -20,10 +20,18 @@ public class AdminController {
             @PathVariable("product_id") String productId,
             @RequestParam(name = "status") String status,
             @RequestHeader("Authorization") String authorizationHeader
-
     ) {
         checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
         productService.changeProductStatus(productId, status);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/all-products")
+    public ResponseEntity<?> approveAllWaitingProducts(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        checkRoleOrElseThrow(externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader));
+        productService.approveAllProducts();
         return ResponseEntity.ok().build();
     }
 

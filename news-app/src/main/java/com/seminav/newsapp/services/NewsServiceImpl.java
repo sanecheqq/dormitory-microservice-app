@@ -215,10 +215,13 @@ public class NewsServiceImpl implements NewsService {
                 () -> cloudStorageService.uploadFiles(images),
                 sendingRequestsExecutor
         ).handle((result, ex) -> {
-            if (ex != null)
+            if (ex != null) {
+                System.out.println(ex.getMessage());
                 return new ArrayList<>();
-            else
+            }
+            else {
                 return result;
+            }
         });
     }
 

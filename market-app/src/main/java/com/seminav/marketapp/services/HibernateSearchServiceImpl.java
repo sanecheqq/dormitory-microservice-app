@@ -34,6 +34,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
+        System.out.println("паттерн " + page);
         return paginate(result, page);
 
 //        System.out.println(result.total().hitCount());
@@ -52,6 +53,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
+        System.out.println("ничего " + page);
         return paginate(result, page);
 //                .fetch(page,4);
 //        System.out.println(result.total().hitCount());
@@ -62,7 +64,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
     @Override
     public List<Product> searchForProducts(ProductCategory category, Double minPrice, Double maxPrice, Integer page) {
         SearchSession searchSession = Search.session(entityManager);
-        return searchSession.search(Product.class)
+        List<Product> result = searchSession.search(Product.class)
                 .where(f -> f.bool()
                         .must(f.match()
                                 .field("category")
@@ -73,7 +75,9 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                         .must(f.match()
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
-                ).fetchHits(page*4, 4);
+                ).fetchAllHits();
+        System.out.println("категория " + page);
+        return paginate(result, page);
 
 //        System.out.println(result.total().hitCount());
 //        return result.hits();
@@ -82,7 +86,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
     @Override
     public List<Product> searchForProducts(String searchPattern, ProductCategory category, Double minPrice, Double maxPrice, Integer page) {
         SearchSession searchSession = Search.session(entityManager);
-        return searchSession.search(Product.class)
+        List<Product> result = searchSession.search(Product.class)
                 .where(f -> f.bool()
                         .must(f.match()
                                 .field("productName").boost(2f)
@@ -97,8 +101,9 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                         .must(f.match()
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
-                ).fetchHits(page*4, 4);
-
+                ).fetchAllHits();
+        System.out.println("паттерн и категория " + page);
+        return paginate(result, page);
 //        System.out.println(result.total().hitCount());
 //        return result.hits();
     }

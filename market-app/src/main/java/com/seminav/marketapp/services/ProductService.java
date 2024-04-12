@@ -22,4 +22,6 @@ public interface ProductService {
     GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page);
 
     ProductDto getProductById(String productId);
+
+    void approveAllProducts();
 }

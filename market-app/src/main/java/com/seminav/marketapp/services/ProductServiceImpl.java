@@ -106,12 +106,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page) {
         List<Product> result;
-        if (category == null && searchPattern == null) {
+        if (category == null && (searchPattern == null || searchPattern.isBlank())) {
             System.out.println("оба нулл");
             result  = hibernateSearchService.searchForProducts(minPrice, maxPrice, page);
         } else if (category == null) {
             result  = hibernateSearchService.searchForProducts(searchPattern, minPrice, maxPrice, page);
-        } else if (searchPattern == null) {
+        } else if (searchPattern == null || searchPattern.isBlank()) {
             result  = hibernateSearchService.searchForProducts(category, minPrice, maxPrice, page);
         } else {
             result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice, page);
@@ -144,6 +144,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProductById(String productId) {
         return productToProductDtoConverter.convert(findByIdOrElseThrow(productId));
+    }
+
+    @Override
+    public void approveAllProducts() {
+        List<Product> validatingProducts = productRepository.findAllByStatus(ProductStatus.VALIDATING);
+        for (var product : validatingProducts) {
+            product.setStatus(ProductStatus.PUBLISHED);
+        }
+        productRepository.saveAll(validatingProducts);
     }
 
     private Product findByIdOrElseThrow(String productId) {
