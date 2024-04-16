@@ -98,16 +98,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(String id) {
-        List<String> imageIds = findByIdOrElseThrow(id).getImages().stream().map(Image::getImageId).toList();
-        cloudStorageService.deleteFiles(imageIds);
-        productRepository.deleteById(id);
+        try {
+            List<String> imageIds = findByIdOrElseThrow(id).getImages().stream().map(Image::getImageId).toList();
+            cloudStorageService.deleteFiles(imageIds);
+            productRepository.deleteById(id);
+        } catch (NoSuchElementException e) {
+            System.out.println(e);
+        }
     }
 
     @Override
     public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page) {
         List<Product> result;
         if (category == null && (searchPattern == null || searchPattern.isBlank())) {
-            System.out.println("оба нулл");
             result  = hibernateSearchService.searchForProducts(minPrice, maxPrice, page);
         } else if (category == null) {
             result  = hibernateSearchService.searchForProducts(searchPattern, minPrice, maxPrice, page);

@@ -34,11 +34,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
-        System.out.println("паттерн " + page);
         return paginate(result, page);
-
-//        System.out.println(result.total().hitCount());
-//        return result.hits();
     }
 
     @Override
@@ -53,12 +49,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
-        System.out.println("ничего " + page);
         return paginate(result, page);
-//                .fetch(page,4);
-//        System.out.println(result.total().hitCount());
-//        System.out.println(result);
-//        return result.hits();
     }
 
     @Override
@@ -76,11 +67,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
-        System.out.println("категория " + page);
         return paginate(result, page);
-
-//        System.out.println(result.total().hitCount());
-//        return result.hits();
     }
 
     @Override
@@ -102,10 +89,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
-        System.out.println("паттерн и категория " + page);
         return paginate(result, page);
-//        System.out.println(result.total().hitCount());
-//        return result.hits();
     }
 
     private List<Product> paginate(List<Product> result, int page) {
