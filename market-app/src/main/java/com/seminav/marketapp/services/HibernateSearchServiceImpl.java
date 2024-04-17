@@ -49,6 +49,7 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("status")
                                 .matching(ProductStatus.PUBLISHED))
                 ).fetchAllHits();
+        System.out.println("price, page" + page);
         return paginate(result, page);
     }
 
@@ -94,8 +95,8 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
 
     private List<Product> paginate(List<Product> result, int page) {
         final int limit = 4;
-        if (result.size() <= limit)
-            return result;
+//        if (result.size() <= limit && page == 0)
+//            return result;
         if (page*limit >= result.size())
             return List.of();
         else if ((page+1)*limit >= result.size())

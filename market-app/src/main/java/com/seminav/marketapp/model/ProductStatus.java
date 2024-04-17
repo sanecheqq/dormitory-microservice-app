@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum ProductStatus {
     VALIDATING("На проверке"),
     REJECTED("Требует изменений"),
-    PUBLISHED("Опубликован"),
-    ARCHIVED("Снят с публикации");
+    PUBLISHED("Опубликовано"),
+    ARCHIVED("Снято с публикации");
 
     private final String statusName;
 
