@@ -24,12 +24,18 @@ object DatabaseSingleton {
                 FluoroCertificatesTable,
                 STDsCertificatesTable,
                 SavedNewsTable,
-                DormitoryAddressesTable
+                DormitoryAddressesTable,
+                SavedProductsTable
             )
         }
         GlobalScope.launch {
             dbQuery { DormitoryAddressesTable.insert {
                 it[address] = "TestStreet123"
+            } }
+        }
+        GlobalScope.launch {
+            dbQuery { DormitoryAddressesTable.insert {
+                it[address] = "ул. Пушкина, д. Колотушкина"
             } }
         }
     }

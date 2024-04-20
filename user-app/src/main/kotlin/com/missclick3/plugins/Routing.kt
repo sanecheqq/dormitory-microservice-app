@@ -10,6 +10,7 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import com.missclick3.services.certificates.CertificateService
 import com.missclick3.services.saved_news.SavedNewsService
+import com.missclick3.services.saved_product.SavedProductService
 import com.missclick3.services.user.UserService
 
 fun Application.configureRouting(
@@ -19,7 +20,8 @@ fun Application.configureRouting(
     stdsService: CertificateService<STDsCertificate>,
     tokenService: TokenService,
     tokenConfig: TokenConfig,
-    savedNewsService: SavedNewsService
+    savedNewsService: SavedNewsService,
+    savedProductService: SavedProductService
 ) {
     routing {
         adminRoutes(hashingService, userService, fluoroService, stdsService)
@@ -27,5 +29,6 @@ fun Application.configureRouting(
         savedNewsRoutes(savedNewsService, userService)
         authenticate()
         userRoutes(userService, fluoroService, stdsService, savedNewsService)
+        savedProductsRoutes(savedProductService, userService)
     }
 }

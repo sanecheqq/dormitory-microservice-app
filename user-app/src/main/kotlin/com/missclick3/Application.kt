@@ -5,6 +5,7 @@ import com.missclick3.plugins.*
 import com.missclick3.repositories.certificates.FluoroCertificateRepositoryImpl
 import com.missclick3.repositories.certificates.STDsCertificateRepositoryImpl
 import com.missclick3.repositories.saved_news.SavedNewsRepositoryImpl
+import com.missclick3.repositories.saved_products.SavedProductRepositoryImpl
 import com.missclick3.security.hashing.HashingServiceImpl
 import com.missclick3.security.token.TokenConfig
 import com.missclick3.security.token.TokenServiceImpl
@@ -16,6 +17,7 @@ import com.missclick3.services.certificates.FluoroCertificateServiceImpl
 import com.missclick3.services.certificates.STDsCertificateServiceImpl
 import com.missclick3.services.saved_news.SavedNewsService
 import com.missclick3.services.saved_news.SavedNewsServiceImpl
+import com.missclick3.services.saved_product.SavedProductServiceImpl
 import com.missclick3.services.user.UserServiceImpl
 import com.orbitz.consul.Consul
 import com.orbitz.consul.model.agent.ImmutableRegistration
@@ -67,6 +69,9 @@ fun Application.module() {
     val savedNewsRepository = SavedNewsRepositoryImpl()
     val savedNewsService = SavedNewsServiceImpl(savedNewsRepository)
 
+    val savedProductRepository = SavedProductRepositoryImpl()
+    val savedProductService = SavedProductServiceImpl(savedProductRepository)
+
     val hashingService = HashingServiceImpl()
     val tokenService = TokenServiceImpl()
     DatabaseSingleton.init()
@@ -79,6 +84,7 @@ fun Application.module() {
         stdsService,
         tokenService,
         tokenConfig,
-        savedNewsService
+        savedNewsService,
+        savedProductService
     )
 }

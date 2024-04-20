@@ -61,10 +61,13 @@ fun Route.savedNewsRoutes(
                     return@delete
                 }
 
-                val newsId = call.parameters["id"] ?: return@delete call.respond(
-                    HttpStatusCode.BadRequest,
-                    "Id is missing"
-                )
+                val newsId = call.parameters["id"] ?: kotlin.run {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        "Id is missing"
+                    )
+                    return@delete
+                }
 
                 val deleted = savedNewsService.deleteFromSavedNews(newsId, userId)
 
@@ -88,8 +91,8 @@ fun Route.savedNewsRoutes(
                     // Добавьте вашу дополнительную проверку здесь, например, проверку роли пользователя
                     val user = userService.getUserById(userId)
                     if (user == null || user.role != "ADMIN") {
-                        call.respond(HttpStatusCode.Conflict, "You are not an admin")
-                        return@intercept finish()
+                            call.respond(HttpStatusCode.Conflict, "You are not an admin")
+                            return@intercept finish()
                     }
                 }
                 delete {
