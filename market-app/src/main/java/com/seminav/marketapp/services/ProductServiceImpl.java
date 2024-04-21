@@ -102,13 +102,14 @@ public class ProductServiceImpl implements ProductService {
             List<String> imageIds = findByIdOrElseThrow(id).getImages().stream().map(Image::getImageId).toList();
             cloudStorageService.deleteFiles(imageIds);
             productRepository.deleteById(id);
+            //todo: send request to user-app to delete from followers
         } catch (NoSuchElementException e) {
             System.out.println(e);
         }
     }
 
     @Override
-    public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page) {
+    public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page, Set<String> savedIds) {
         List<Product> result;
         if (category == null && (searchPattern == null || searchPattern.isBlank())) {
             result  = hibernateSearchService.searchForProducts(minPrice, maxPrice, page);
@@ -119,9 +120,8 @@ public class ProductServiceImpl implements ProductService {
         } else {
             result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice, page);
         }
-        Set<String> savedProductIds = new HashSet<>(); // todo: будет запрос на получение избранных как с новостями для проверки
         return new GetProductsResponse(
-                convertProductsToProductDtoWithFavoriteFieldList(result, savedProductIds)
+                convertProductsToProductDtoWithFavoriteFieldList(result, savedIds)
         );
     }
 
@@ -156,6 +156,14 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus(ProductStatus.PUBLISHED);
         }
         productRepository.saveAll(validatingProducts);
+    }
+
+    @Override
+    public GetProductsResponse getFavoriteProducts(List<String> savedProducts) {
+        List<Product> favoriteProducts = productRepository.findAllById(savedProducts);
+        return new GetProductsResponse(
+                convertProductsToProductDtoWithFavoriteFieldList(favoriteProducts, new HashSet<>(savedProducts))
+        );
     }
 
     private Product findByIdOrElseThrow(String productId) {

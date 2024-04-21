@@ -16,6 +16,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ProductToProductDtoConverter productToProductDtoConverter;
+
     @Override
     public User getUserOrElseSave(UserDto userDto) {
         Optional<User> user = userRepository.findById(userDto.id());

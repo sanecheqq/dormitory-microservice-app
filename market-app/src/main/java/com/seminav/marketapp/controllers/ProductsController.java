@@ -14,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -70,12 +74,18 @@ public class ProductsController {
             @RequestParam(value = "max_price", defaultValue = ""+1e7) Double maxPrice,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
-//        List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);//todo: впихать savedProducts, когда на юзере будет ручка
-        var skip = externalUserService.getUserDto(authorizationHeader);//todo: впихать savedProducts, когда на юзере будет ручка
-        System.out.println(searchPattern);
-        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern, page));
+        List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);
+        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern, page, new HashSet<>(savedProducts)));
     }
-    //todo сделать получение избранных продуктов
+
+    @GetMapping("/favorites")
+    public ResponseEntity<GetProductsResponse> getFavoritesProducts(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);
+        return ResponseEntity.ok(productService.getFavoriteProducts(savedProducts));
+    }
+
     @GetMapping("/my")
     public ResponseEntity<GetMyProductsResponse> getMyProducts(
             @RequestHeader("Authorization") String authorizationHeader
