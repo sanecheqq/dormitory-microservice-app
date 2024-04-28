@@ -6,6 +6,7 @@ import com.seminav.marketapp.external.services.CloudStorageService;
 import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
+import com.seminav.marketapp.messages.PutProductRequest;
 import com.seminav.marketapp.messages.dtos.ProductDto;
 import com.seminav.marketapp.messages.dtos.ProductDtoWithFavoriteField;
 import com.seminav.marketapp.model.*;
@@ -164,6 +165,34 @@ public class ProductServiceImpl implements ProductService {
         return new GetProductsResponse(
                 convertProductsToProductDtoWithFavoriteFieldList(favoriteProducts, new HashSet<>(savedProducts))
         );
+    }
+
+    @Override
+    public ProductDto putProduct(PutProductRequest putProductRequest, String id) {
+        Product product = findByIdOrElseThrow(id);
+        List<Image> productImages = product.getImages();
+
+        Set<String> oldImagesToSave = new HashSet<>(putProductRequest.oldImages());
+        List<Image> imagesToRemove = productImages.stream()
+                .filter(v -> !oldImagesToSave.contains((v.getImageId())))
+                .toList();
+        imagesToRemove.forEach(product::removeImage);
+        cloudStorageService.deleteFiles(imagesToRemove.stream()
+                .map(Image::getImageId)
+                .toList()
+        );
+        List<FileDto> savedNewImagesDtos = new ArrayList<>();
+        try {
+            savedNewImagesDtos = uploadFilesAsync(putProductRequest.newImages()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Troubles with getting result from CompletableFuture\n" + e.getMessage());
+        }
+        product.addAllImages(savedNewImagesDtos.stream()
+                .map(fileDtoToImageConverter::convert)
+                .toList()
+        );
+
+        return productToProductDtoConverter.convert(productRepository.save(product));
     }
 
     private Product findByIdOrElseThrow(String productId) {
