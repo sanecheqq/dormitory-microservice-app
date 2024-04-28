@@ -75,4 +75,9 @@ public class Product {
         }
         this.images.clear();
     }
+
+    public void removeImage(Image image) {
+        image.setProduct(null);
+        this.images.remove(image);
+    }
 }

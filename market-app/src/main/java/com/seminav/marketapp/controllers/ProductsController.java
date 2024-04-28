@@ -5,6 +5,7 @@ import com.seminav.marketapp.external.services.ExternalUserService;
 import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetMyProductsResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
+import com.seminav.marketapp.messages.PutProductRequest;
 import com.seminav.marketapp.messages.dtos.ProductDto;
 import com.seminav.marketapp.model.ProductCategory;
 import com.seminav.marketapp.services.ProductService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -34,6 +34,16 @@ public class ProductsController {
         UserDto userDto = externalUserService.getUserDto(authorizationHeader);
         ProductDto product = productService.createProduct(createProductRequest, userDto);
         return ResponseEntity.ok(product);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> putProduct(
+            @PathVariable("id") String id,
+            @ModelAttribute @Valid PutProductRequest putProductRequest,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        externalUserService.getUserRoleFromUserAndValidateJWT(authorizationHeader);
+                return ResponseEntity.ok(productService.putProduct(putProductRequest, id));
     }
 
     @PatchMapping("/sold/{id}")

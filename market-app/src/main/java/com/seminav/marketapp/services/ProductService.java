@@ -4,6 +4,7 @@ import com.seminav.marketapp.external.messages.UserDto;
 import com.seminav.marketapp.messages.CreateProductRequest;
 import com.seminav.marketapp.messages.GetProductsForValidationResponse;
 import com.seminav.marketapp.messages.GetProductsResponse;
+import com.seminav.marketapp.messages.PutProductRequest;
 import com.seminav.marketapp.messages.dtos.ProductDto;
 import com.seminav.marketapp.model.ProductCategory;
 
@@ -29,4 +30,6 @@ public interface ProductService {
     void approveAllProducts();
 
     GetProductsResponse getFavoriteProducts(List<String> savedProducts);
+
+    ProductDto putProduct(PutProductRequest putProductRequest, String id);
 }
