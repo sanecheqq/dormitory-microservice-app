@@ -15,6 +15,7 @@ object TimeRangeTable: UUIDTable("time_range") {
     val userTg = varchar("userTg", 128)
     val date = date("date")
     val withDrier = bool("withDrier")
+    val status = bool("status")
 
     val washingMachine = reference("washingMachine", WashingMachineTable)
 }
@@ -28,6 +29,7 @@ class TimeRange(id: EntityID<UUID>) : UUIDEntity(id) {
     var userTg by TimeRangeTable.userTg
     var date by TimeRangeTable.date
     var withDrier by TimeRangeTable.withDrier
+    var status by TimeRangeTable.status
 
     var washingMachine by WashingMachine referencedOn TimeRangeTable.washingMachine
 }

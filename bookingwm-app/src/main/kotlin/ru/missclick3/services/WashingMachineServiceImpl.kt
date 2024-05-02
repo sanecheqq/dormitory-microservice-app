@@ -16,6 +16,10 @@ class WashingMachineServiceImpl(
         return repository.getWMsForDormitory(request.address)
     }
 
+    override suspend fun getEnabledWMsForDormitory(request: GetWMsForDormitoryRequest): List<WashingMachineDto> {
+        return repository.getEnabledWMsForDormitory(request.address)
+    }
+
     override suspend fun addWM(request: WashingMachineRequest): Boolean {
         return repository.addWM(request.address, request.wmNumber)
     }

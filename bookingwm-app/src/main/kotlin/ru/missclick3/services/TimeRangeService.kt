@@ -9,7 +9,7 @@ interface TimeRangeService {
     ) : Boolean
 
     suspend fun deleteBooking(
-        request: GetTimeRangeRequest
+        request: GetTimeRangeById
     ) : Boolean
 
     suspend fun getTimeRange(
@@ -19,10 +19,8 @@ interface TimeRangeService {
     suspend fun getTimeRangesForWm(
         request: GetTimeRangesForWmRequest
     ) : List<TimeRangeDto>
-
+    suspend fun getTimeRangeById(request: GetTimeRangeById) : TimeRangeDto?
     suspend fun getTimeRangesForUser(request: GetTimeRangesForUserRequest) : List<TimeRangeDto>
 
     suspend fun getCurrentKeyUsers(request: GetWMsForDormitoryRequest) : List<String>
-
-    suspend fun getAmountOfTimeRangersForUser(request: GetTimeRangesForUserRequest) : Int
 }

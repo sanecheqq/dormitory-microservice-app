@@ -3,7 +3,6 @@ package ru.missclick3.messages.requests
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetTimeRangesForUserRequest(
-    val userId: String,
-    val date: String
+data class GetTimeRangeById(
+    val id: String
 )

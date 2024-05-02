@@ -3,6 +3,8 @@ package ru.missclick3.repositories
 import org.jetbrains.exposed.sql.and
 import ru.missclick3.config.DatabaseSingleton.dbQuery
 import ru.missclick3.messages.dtos.WashingMachineDto
+import ru.missclick3.model.TimeRange
+import ru.missclick3.model.TimeRangeTable
 import ru.missclick3.model.WashingMachine
 import ru.missclick3.model.WashingMachineTable
 
@@ -28,6 +30,11 @@ class WashingMachineRepositoryImpl : WashingMachineRepository {
                 }.singleOrNull()
                 if (wm != null) {
                     wm.enabled = !wm.enabled
+                    TimeRange.find {
+                        TimeRangeTable.washingMachine eq wm.id
+                    }.forEach {
+                        it.status = wm.enabled
+                    }
                 }
             }
             true
@@ -39,6 +46,14 @@ class WashingMachineRepositoryImpl : WashingMachineRepository {
     override suspend fun getWMsForDormitory(address: String): List<WashingMachineDto> {
         return dbQuery {
             WashingMachine.find { WashingMachineTable.dormitoryAddress eq address }
+                .map(::wmToWMDTO)
+        }
+    }
+
+    override suspend fun getEnabledWMsForDormitory(address: String): List<WashingMachineDto> {
+        return dbQuery {
+            WashingMachine.find { WashingMachineTable.dormitoryAddress eq address and
+                    (WashingMachineTable.enabled eq true)}
                 .map(::wmToWMDTO)
         }
     }

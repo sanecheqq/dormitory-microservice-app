@@ -15,12 +15,9 @@ interface TimeRangeRepository {
     ) : Boolean
 
     suspend fun deleteBooking(
-        address: String,
-        wmNumber: Int,
-        startTime: String,
-        endTime: String,
-        date: String
+        id: String
     ) : Boolean
+    suspend fun getTimeRangeById(id: String) : TimeRangeDto?
 
     suspend fun getTimeRange(
         address: String,
@@ -36,9 +33,7 @@ interface TimeRangeRepository {
         date: String
     ) : List<TimeRangeDto>
 
-    suspend fun getTimeRangesForUser(userId: String) : List<TimeRangeDto>
+    suspend fun getTimeRangesForUser(userId: String, date: String) : List<TimeRangeDto>
 
     suspend fun getCurrentKeyUsers(address: String) : List<String>
-
-    suspend fun getAmountOfTimeRangersForUser(userId: String) : Int
 }

@@ -10,6 +10,10 @@ interface WashingMachineRepository {
     suspend fun getWMsForDormitory(
         address: String
     ) : List<WashingMachineDto>
+
+    suspend fun getEnabledWMsForDormitory(
+        address: String
+    ) : List<WashingMachineDto>
     suspend fun addWM(
         address: String,
         wmNumber: Int

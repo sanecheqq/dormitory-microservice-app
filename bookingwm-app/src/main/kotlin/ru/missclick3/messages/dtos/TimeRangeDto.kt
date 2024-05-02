@@ -11,5 +11,6 @@ data class TimeRangeDto(
     val userId: String? = "",
     val userTg: String? = "",
     val wmNumber: Int,
-    val withDrier: Boolean
+    val withDrier: Boolean,
+    val status: Boolean = true
 )

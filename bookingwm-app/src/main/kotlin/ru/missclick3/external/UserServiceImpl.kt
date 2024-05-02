@@ -3,7 +3,9 @@ package ru.missclick3.external
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.apache.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
 import ru.missclick3.util.ConsulFeature
 
 class UserServiceImpl : UserService {
@@ -12,14 +14,21 @@ class UserServiceImpl : UserService {
             install(ConsulFeature) {
                 this.consulUrl = "http://localhost:8500"
             }
+            install(ContentNegotiation) {
+                json()
+            }
         }
         try {
-            val response = client.get("consul://user-app/user") {
+            val response = client.get("http://user-app/user") {
                 header("Authorization", authHeader)
             }.body<UserInfoResponse>().userDTO
             return response
         } catch (e: Exception) {
+            println("EXCEPTION!!! ${e.message}")
             return null
+        }
+        finally {
+            client.close()
         }
     }
 

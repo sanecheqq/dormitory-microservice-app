@@ -11,6 +11,10 @@ interface WashingMachineService {
     suspend fun getWMsForDormitory(
         request: GetWMsForDormitoryRequest
     ) : List<WashingMachineDto>
+
+    suspend fun getEnabledWMsForDormitory(
+        request: GetWMsForDormitoryRequest
+    ) : List<WashingMachineDto>
     suspend fun addWM(
         request: WashingMachineRequest
     ) : Boolean

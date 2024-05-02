@@ -20,14 +20,8 @@ class TimeRangeServiceImpl(
         )
     }
 
-    override suspend fun deleteBooking(request: GetTimeRangeRequest): Boolean {
-        return repository.deleteBooking(
-            address = request.address,
-            wmNumber = request.wmNumber,
-            startTime = request.startTime,
-            endTime = request.endTime,
-            date = request.date
-        )
+    override suspend fun deleteBooking(request: GetTimeRangeById): Boolean {
+        return repository.deleteBooking(request.id)
     }
 
     override suspend fun getTimeRange(request: GetTimeRangeRequest): TimeRangeDto? {
@@ -50,7 +44,8 @@ class TimeRangeServiceImpl(
 
     override suspend fun getTimeRangesForUser(request: GetTimeRangesForUserRequest): List<TimeRangeDto> {
         return repository.getTimeRangesForUser(
-            userId = request.userId
+            userId = request.userId,
+            date = request.date
         )
     }
 
@@ -58,7 +53,7 @@ class TimeRangeServiceImpl(
         return repository.getCurrentKeyUsers(request.address)
     }
 
-    override suspend fun getAmountOfTimeRangersForUser(request: GetTimeRangesForUserRequest): Int {
-        return repository.getAmountOfTimeRangersForUser(request.userId)
+    override suspend fun getTimeRangeById(request: GetTimeRangeById): TimeRangeDto? {
+        return repository.getTimeRangeById(request.id)
     }
 }
