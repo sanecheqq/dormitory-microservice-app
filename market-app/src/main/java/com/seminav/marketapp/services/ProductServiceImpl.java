@@ -192,6 +192,7 @@ public class ProductServiceImpl implements ProductService {
                 .toList()
         );
 
+        product.setStatus(ProductStatus.VALIDATING);
         return productToProductDtoConverter.convert(productRepository.save(product));
     }
 
