@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 
 class TimeRangeRepositoryImpl : TimeRangeRepository {
     private fun parseToLocalDateTimeFromString(time: String, date: String) : LocalDateTime {
-        val dateParts = date.split(":").map { it.toInt() }
+        val dateParts = date.split("-").map { it.toInt() }
         val timeParts = time.split(":").map {it.toInt()}
         return LocalDateTime.of(dateParts[2], dateParts[1], dateParts[0], timeParts[0], timeParts[1])
             .atZone(ZoneId.of("Europe/Moscow"))
