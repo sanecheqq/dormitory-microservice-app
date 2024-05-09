@@ -94,6 +94,9 @@ class WashingMachineRepositoryImpl : WashingMachineRepository {
                 if (wm == null) {
                     good = false
                 } else {
+                    TimeRange.find { TimeRangeTable.washingMachine eq wm.id }.forEach {
+                        it.delete()
+                    }
                     wm.delete()
                 }
             }

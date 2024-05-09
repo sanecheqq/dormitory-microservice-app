@@ -25,7 +25,25 @@ fun Route.bookingRoute(
     washingMachineService: WashingMachineService
 ) {
     route("booking") {
+            get("/my") {
+                val authHeader = call.request.header(HttpHeaders.Authorization)
+                if (authHeader == null) {
+                    call.respond(HttpStatusCode.Unauthorized)
+                    return@get
+                }
 
+                val userDto = userService.getUserDto(authHeader)
+                if (userDto == null) {
+                    call.respond(HttpStatusCode.Conflict, "There is no such user")
+                    return@get
+                }
+                val response = timeRangeService.getActiveBookingsForUser(
+                    UserIDRequest(
+                        userDto.id!!
+                    )
+                )
+                call.respond(HttpStatusCode.OK, response)
+            }
         get {
             val authHeader = call.request.header(HttpHeaders.Authorization)
             if (authHeader == null) {
@@ -132,7 +150,6 @@ fun Route.bookingRoute(
 
             call.respond(HttpStatusCode.OK, "Time range was booked")
         }
-
         get("{id}") {
             val authHeader = call.request.header(HttpHeaders.Authorization)
             if (authHeader == null) {

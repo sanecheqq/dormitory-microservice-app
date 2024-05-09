@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import ru.missclick3.config.DatabaseSingleton.dbQuery
 import ru.missclick3.messages.dtos.TimeRangeDto
+import ru.missclick3.messages.responses.ActiveBookings
 import ru.missclick3.model.TimeRange
 import ru.missclick3.model.TimeRangeTable
 import ru.missclick3.model.WashingMachine
@@ -81,7 +82,7 @@ class TimeRangeRepositoryImpl : TimeRangeRepository {
                     if (timeRange == null) {
                         val amountOFBookingsForDate = getTimeRangesForUser(userId, date).size
 
-                        if (amountOFBookingsForDate < 4) {
+                        if (amountOFBookingsForDate < 2) {
                             TimeRange.new {
                                 this.startTime = toAddStartTime
                                 this.endTime = toAddEndTime
@@ -173,7 +174,7 @@ class TimeRangeRepositoryImpl : TimeRangeRepository {
         return dbQuery {
             TimeRange.find {
                 (TimeRangeTable.userId eq userId) and
-                        (TimeRangeTable.date greaterEq currentMoscowDate)
+                        (TimeRangeTable.date eq currentMoscowDate)
             }.map(::timeRangeToTimeRangeDto)
         }
     }
@@ -199,5 +200,17 @@ class TimeRangeRepositoryImpl : TimeRangeRepository {
             ) }
             res
         }
+    }
+
+    override suspend fun getActiveBookingsForUser(userId: String): ActiveBookings {
+        val dateToday = LocalDate.now(ZoneId.of("Europe/Moscow"))
+        val dateTomorrow = dateToday.plusDays(1)
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val formattedToday = dateToday.format(formatter)
+        val formattedTomorrow = dateTomorrow.format(formatter)
+        return ActiveBookings(
+            getTimeRangesForUser(userId, formattedToday),
+            getTimeRangesForUser(userId, formattedTomorrow)
+        )
     }
 }

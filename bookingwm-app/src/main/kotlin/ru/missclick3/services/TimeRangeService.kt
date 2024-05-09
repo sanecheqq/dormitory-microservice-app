@@ -2,6 +2,7 @@ package ru.missclick3.services
 
 import ru.missclick3.messages.dtos.TimeRangeDto
 import ru.missclick3.messages.requests.*
+import ru.missclick3.messages.responses.ActiveBookings
 
 interface TimeRangeService {
     suspend fun bookTimeRange(
@@ -23,4 +24,6 @@ interface TimeRangeService {
     suspend fun getTimeRangesForUser(request: GetTimeRangesForUserRequest) : List<TimeRangeDto>
 
     suspend fun getCurrentKeyUsers(request: GetWMsForDormitoryRequest) : List<String>
+
+    suspend fun getActiveBookingsForUser(request: UserIDRequest) : ActiveBookings
 }

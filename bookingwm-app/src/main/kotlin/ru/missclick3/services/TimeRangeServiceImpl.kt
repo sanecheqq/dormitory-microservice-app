@@ -2,6 +2,7 @@ package ru.missclick3.services
 
 import ru.missclick3.messages.dtos.TimeRangeDto
 import ru.missclick3.messages.requests.*
+import ru.missclick3.messages.responses.ActiveBookings
 import ru.missclick3.repositories.TimeRangeRepository
 
 class TimeRangeServiceImpl(
@@ -55,5 +56,9 @@ class TimeRangeServiceImpl(
 
     override suspend fun getTimeRangeById(request: GetTimeRangeById): TimeRangeDto? {
         return repository.getTimeRangeById(request.id)
+    }
+
+    override suspend fun getActiveBookingsForUser(request: UserIDRequest): ActiveBookings {
+        return repository.getActiveBookingsForUser(request.userId)
     }
 }
