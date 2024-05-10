@@ -14,13 +14,13 @@ public class AppConfiguration implements WebMvcConfigurer {
         return new RestTemplate();
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/products/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT");
-        registry.addMapping("/admin/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/products/**")
+//                .allowedOrigins("*")
+//                .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT");
+//        registry.addMapping("/admin/**")
+//                .allowedOrigins("*")
+//                .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT");
+//    }
 }

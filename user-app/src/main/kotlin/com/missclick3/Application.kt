@@ -39,18 +39,18 @@ fun main() {
 }
 
 fun Application.module() {
-    install(CORS) {
-        allowMethod(HttpMethod.Options)
-        allowMethod(HttpMethod.Put)
-        allowMethod(HttpMethod.Patch)
-        allowMethod(HttpMethod.Delete)
-        allowMethod(HttpMethod.Get)
-        allowMethod(HttpMethod.Post)
-        allowHeader(HttpHeaders.ContentType)
-        allowHeader(HttpHeaders.Authorization)
-        anyHost()
-        allowCredentials = true
-    }
+//    install(CORS) {
+//        allowMethod(HttpMethod.Options)
+//        allowMethod(HttpMethod.Put)
+//        allowMethod(HttpMethod.Patch)
+//        allowMethod(HttpMethod.Delete)
+//        allowMethod(HttpMethod.Get)
+//        allowMethod(HttpMethod.Post)
+//        allowHeader(HttpHeaders.ContentType)
+//        allowHeader(HttpHeaders.Authorization)
+//        anyHost()
+//        allowCredentials = true
+//    }
     val tokenConfig = TokenConfig(
         issuer = System.getenv("JWT_ISSUER"),
         audience = System.getenv("JWT_AUDIENCE"),
