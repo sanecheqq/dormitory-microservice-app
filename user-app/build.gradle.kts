@@ -60,3 +60,25 @@ dependencies {
     //cors
     implementation("io.ktor:ktor-server-cors:$ktor_version")
 }
+
+val mainClassName = "com.missclick3.Application.kt"
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = mainClassName
+    }
+}
+
+tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+    mainClass.set("com.missclick3.ApplicationKt")
+
+    environment("JWT_AUDIENCE", "users")
+    environment("JWT_DOMAIN", "http://0.0.0.0:8085")
+    environment("JWT_ISSUER", "http://0.0.0.0:8085")
+    environment("JWT_REALM", "ktor user-app")
+    environment("JWT_SECRET", "secret")
+
+    environment("DB_DRIVER", "org.postgresql.Driver")
+    environment("DB_USER", "postgres")
+    environment("DB_PW", "postgres")
+    environment("DB_URL", "jdbc:postgresql://localhost:5432/user_app_db")
+}

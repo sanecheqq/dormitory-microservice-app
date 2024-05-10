@@ -63,3 +63,18 @@ dependencies {
 
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
 }
+
+val mainClassName = "ru.missclick3.ApplicationKt"
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = mainClassName
+    }
+}
+tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+    mainClass.set("ru.missclick3.ApplicationKt")
+
+    environment("DB_DRIVER", "org.postgresql.Driver")
+    environment("DB_USER", "postgres")
+    environment("DB_PW", "postgres")
+    environment("DB_URL", "jdbc:postgresql://localhost:5432/booking_wm_app_db")
+}
