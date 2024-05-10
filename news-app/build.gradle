@@ -1,7 +1,5 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
-	id 'io.spring.dependency-management' version '1.1.4'
+	id 'application'
 }
 
 group = 'com.seminav'
@@ -46,4 +44,12 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+mainClassName = 'com.seminav.newsapp.NewsAppApplication'
+jar {
+	manifest.attributes("Main-Class": mainClassName);
+}
+
+bootRun {
+	mainClassName = 'com.seminav.newsapp.NewsAppApplication'
 }

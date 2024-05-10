@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/news/admin")
 @RequiredArgsConstructor
 public class AdminController {
     private final NewsService newsService;

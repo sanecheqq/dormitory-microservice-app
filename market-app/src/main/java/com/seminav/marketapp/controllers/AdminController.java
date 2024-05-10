@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/market/admin")
 @RequiredArgsConstructor
 public class AdminController {
     private final ProductService productService;

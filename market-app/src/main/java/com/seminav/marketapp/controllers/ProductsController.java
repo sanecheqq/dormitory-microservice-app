@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/market/products")
 @RequiredArgsConstructor
 public class ProductsController {
     private final ProductService productService;

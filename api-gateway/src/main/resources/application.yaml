@@ -1,0 +1,38 @@
+server:
+  port: 8070
+
+# App Config
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    consul:
+      config:
+        enabled: false
+        discovery:
+          prefer-ip-address: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      mvc:
+        form-filter:
+          enabled: true
+        routes:
+          - id: booking-app
+            uri: lb://booking-app
+            predicates:
+              - Path=/booking/**
+          - id: news-app
+            uri: lb://news-app
+            predicates:
+              - Path=/news/**
+          - id: market-app
+            uri: lb://market-app
+            predicates:
+              - Path=/market/**
+          - id: user-app
+            uri: lb://user-app
+            predicates:
+              - Path=/user/**, /saved**/**, /auth/**, /admin**

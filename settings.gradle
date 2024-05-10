@@ -1,1 +1,8 @@
 rootProject.name = 'dormitory-microservice-app'
+
+include 'user-app'
+include 'api-gateway'
+include 'bookingwm-app'
+include 'market-app'
+include 'news-app'
+include  'storage-app'
