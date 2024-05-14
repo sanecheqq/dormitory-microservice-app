@@ -1,6 +1,7 @@
 package com.seminav.marketapp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class Product {
 
     @Column(name = "description")
     @FullTextField
+    @Size(max = 1000)
     private String description;
 
     @Column(name = "price")
