@@ -23,7 +23,7 @@ public interface ProductService {
 
     void deleteProduct(String id);
 
-    GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page, Set<String> savedIds);
+    GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, String address, Integer page, Set<String> savedIds);
 
     ProductDto getProductById(String productId);
 

@@ -82,10 +82,11 @@ public class ProductsController {
             @RequestParam(value = "category", required = false) ProductCategory category,
             @RequestParam(value = "min_price", defaultValue = "0") Double minPrice,
             @RequestParam(value = "max_price", defaultValue = ""+1e7) Double maxPrice,
+            @RequestParam(value = "address", required = false) String address,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         List<String> savedProducts = externalUserService.getUserSavedProducts(authorizationHeader);
-        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern, page, new HashSet<>(savedProducts)));
+        return ResponseEntity.ok(productService.getProducts(category, minPrice, maxPrice, searchPattern, address, page, new HashSet<>(savedProducts)));
     }
 
     @GetMapping("/favorites")
