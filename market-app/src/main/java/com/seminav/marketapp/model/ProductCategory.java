@@ -7,5 +7,6 @@ public enum ProductCategory {
     MALE_CLOTHES,
     HOUSEHOLD_GOODS,
     SERVICES,
+    STUDYING,
     OTHERS,
 }

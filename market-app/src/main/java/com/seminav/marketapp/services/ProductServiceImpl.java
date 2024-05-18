@@ -110,16 +110,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, Integer page, Set<String> savedIds) {
+    public GetProductsResponse getProducts(ProductCategory category, Double minPrice, Double maxPrice, String searchPattern, String address, Integer page, Set<String> savedIds) {
         List<Product> result;
-        if (category == null && (searchPattern == null || searchPattern.isBlank())) {
-            result  = hibernateSearchService.searchForProducts(minPrice, maxPrice, page);
-        } else if (category == null) {
-            result  = hibernateSearchService.searchForProducts(searchPattern, minPrice, maxPrice, page);
-        } else if (searchPattern == null || searchPattern.isBlank()) {
-            result  = hibernateSearchService.searchForProducts(category, minPrice, maxPrice, page);
+        if (address == null || address.isBlank()) {
+            if (category == null && (searchPattern == null || searchPattern.isBlank())) {
+                result  = hibernateSearchService.searchForProducts(minPrice, maxPrice, page);
+            } else if (category == null) {
+                result  = hibernateSearchService.searchForProducts(searchPattern, minPrice, maxPrice, page);
+            } else if (searchPattern == null || searchPattern.isBlank()) {
+                result  = hibernateSearchService.searchForProducts(category, minPrice, maxPrice, page);
+            } else {
+                result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice, page);
+            }
         } else {
-            result = hibernateSearchService.searchForProducts(searchPattern, category, minPrice, maxPrice, page);
+            if (category == null && (searchPattern == null || searchPattern.isBlank())) {
+                result  = hibernateSearchService.searchForProductsWithAddress(address, minPrice, maxPrice, page);
+            } else if (category == null) {
+                result  = hibernateSearchService.searchForProductsWithAddress(address, searchPattern, minPrice, maxPrice, page);
+            } else if (searchPattern == null || searchPattern.isBlank()) {
+                result  = hibernateSearchService.searchForProductsWithAddress(address, category, minPrice, maxPrice, page);
+            } else {
+                result = hibernateSearchService.searchForProductsWithAddress(address, searchPattern, category, minPrice, maxPrice, page);
+            }
         }
         return new GetProductsResponse(
                 convertProductsToProductDtoWithFavoriteFieldList(result, savedIds)

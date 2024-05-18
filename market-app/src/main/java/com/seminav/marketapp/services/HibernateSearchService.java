@@ -13,4 +13,14 @@ public interface HibernateSearchService {
     List<Product> searchForProducts(ProductCategory category, Double minPrice, Double maxPrice, Integer page);
 
     List<Product> searchForProducts(String searchPattern, ProductCategory category, Double minPrice, Double maxPrice, Integer page);
+
+    List<Product> searchForProductsWithAddress(String address, Double minPrice, Double maxPrice, Integer page);
+
+    List<Product> searchForProductsWithAddress(String address, String searchPattern, Double minPrice, Double maxPrice, Integer page);
+
+    List<Product> searchForProductsWithAddress(String address, ProductCategory category, Double minPrice, Double maxPrice, Integer page);
+
+    List<Product> searchForProductsWithAddress(String address, String searchPattern, ProductCategory category, Double minPrice, Double maxPrice, Integer page);
+
+
 }

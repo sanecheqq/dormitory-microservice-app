@@ -51,6 +51,7 @@ public class Product {
     private Timestamp date;
 
     @Column(name = "address")
+    @FullTextField
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -5,6 +5,9 @@ import com.seminav.marketapp.model.ProductCategory;
 import com.seminav.marketapp.model.ProductStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.search.engine.search.predicate.dsl.MatchPredicateOptionsStep;
+import org.hibernate.search.engine.search.predicate.dsl.RangePredicateOptionsStep;
+import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.stereotype.Service;
@@ -28,12 +31,8 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .field("description")
                                 .matching(searchPattern)
                                 .fuzzy(2, 4))
-                        .must(f.range()
-                                .field("price")
-                                .between(BigDecimal.valueOf(minPrice), BigDecimal.valueOf(maxPrice)))
-                        .must(f.match()
-                                .field("status")
-                                .matching(ProductStatus.PUBLISHED))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
                 ).fetchAllHits();
         return paginate(result, page);
     }
@@ -43,12 +42,8 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
         SearchSession searchSession = Search.session(entityManager);
         List<Product> result = searchSession.search(Product.class)
                 .where(f -> f.bool()
-                        .must(f.range()
-                                .field("price")
-                                .between(BigDecimal.valueOf(minPrice), BigDecimal.valueOf(maxPrice)))
-                        .must(f.match()
-                                .field("status")
-                                .matching(ProductStatus.PUBLISHED))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
                 ).fetchAllHits();
         return paginate(result, page);
     }
@@ -61,12 +56,8 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                         .must(f.match()
                                 .field("category")
                                 .matching(category))
-                        .must(f.range()
-                                .field("price")
-                                .between(BigDecimal.valueOf(minPrice), BigDecimal.valueOf(maxPrice)))
-                        .must(f.match()
-                                .field("status")
-                                .matching(ProductStatus.PUBLISHED))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
                 ).fetchAllHits();
         return paginate(result, page);
     }
@@ -83,14 +74,94 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
                                 .fuzzy(2, 4)).must(f.match()
                                 .field("category")
                                 .matching(category))
-                        .must(f.range()
-                                .field("price")
-                                .between(BigDecimal.valueOf(minPrice), BigDecimal.valueOf(maxPrice)))
-                        .must(f.match()
-                                .field("status")
-                                .matching(ProductStatus.PUBLISHED))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
                 ).fetchAllHits();
         return paginate(result, page);
+    }
+
+    @Override
+    public List<Product> searchForProductsWithAddress(String address, Double minPrice, Double maxPrice, Integer page) {
+        SearchSession searchSession = Search.session(entityManager);
+        List<Product> result = searchSession.search(Product.class)
+                .where(f -> f.bool()
+                        .must(f.match()
+                                .field("address")
+                                .matching(address))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
+                ).fetchAllHits();
+        return paginate(result, page);
+    }
+
+    @Override
+    public List<Product> searchForProductsWithAddress(String address, String searchPattern, Double minPrice, Double maxPrice, Integer page) {
+        SearchSession searchSession = Search.session(entityManager);
+        List<Product> result = searchSession.search(Product.class)
+                .where(f -> f.bool()
+                        .must(f.match()
+                                .field("address")
+                                .matching(address))
+                        .must(f.match()
+                                .field("productName").boost(2f)
+                                .field("description")
+                                .matching(searchPattern)
+                                .fuzzy(2, 4))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
+                ).fetchAllHits();
+        return paginate(result, page);
+    }
+
+    @Override
+    public List<Product> searchForProductsWithAddress(String address, ProductCategory category, Double minPrice, Double maxPrice, Integer page) {
+        SearchSession searchSession = Search.session(entityManager);
+        List<Product> result = searchSession.search(Product.class)
+                .where(f -> f.bool()
+                        .must(f.match()
+                                .field("address")
+                                .matching(address))
+                        .must(f.match()
+                                .field("category")
+                                .matching(category))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
+                ).fetchAllHits();
+        return paginate(result, page);
+    }
+
+
+    @Override
+    public List<Product> searchForProductsWithAddress(String address, String searchPattern, ProductCategory category, Double minPrice, Double maxPrice, Integer page) {
+        SearchSession searchSession = Search.session(entityManager);
+        List<Product> result = searchSession.search(Product.class)
+                .where(f -> f.bool()
+                        .must(f.match()
+                                .field("address")
+                                .matching(address))
+                        .must(f.match()
+                                .field("productName").boost(2f)
+                                .field("description")
+                                .matching(searchPattern)
+                                .fuzzy(2, 4)).must(f.match()
+                                .field("category")
+                                .matching(category))
+                        .must(getPriceRange(minPrice, maxPrice, f))
+                        .must(getStatusMatch(f))
+                ).fetchAllHits();
+        return paginate(result, page);
+    }
+
+    private MatchPredicateOptionsStep<?> getStatusMatch(SearchPredicateFactory f) {
+        return f.match()
+                .field("status")
+                .matching(ProductStatus.PUBLISHED);
+    }
+
+    private RangePredicateOptionsStep<?> getPriceRange(Double minPrice, Double maxPrice, SearchPredicateFactory f) {
+        return f.range()
+                .field("price")
+                .between(BigDecimal.valueOf(minPrice), BigDecimal.valueOf(maxPrice));
     }
 
     private List<Product> paginate(List<Product> result, int page) {
